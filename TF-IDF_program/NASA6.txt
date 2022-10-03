@@ -1,0 +1,472 @@
+1
+Astrobee: A New Tool for ISS Operations
+Maria G Bualat,
+1 Trey Smith2
+, and Terrence W. Fong3
+NASA Ames Research Center, Moffett Field, CA 94035, USA
+Ernest E. Smith4 and D. W. Wheeler5
+Stinger Ghaffarian Technologies, Inc., Houston, TX 77058, USA
+and
+The Astrobee Team
+Astrobee is a new class of free-flying robots that operate in the interior of the
+International Space Station (ISS). In addition to providing a research platform for zero-g
+free-flying robotics (replacing the Synchronized Position Hold Engage and Reorient
+Experimental Satellites (SPHERES)), Astrobee improves the efficiency of ISS operations by
+providing flight and payload controllers with a mobile camera/sensor platform. The
+Astrobee system consists of three robots, a docking station, and a ground data system.
+Development began in late 2014, and Astrobee will launch to ISS in late 2018. This paper
+provides an overview of the capabilities of the Astrobee system, the concept of operations for
+ISS operations support, and the challenges of operating a free-flying robot within the
+constraints of the ISS environment.
+I. Introduction
+We are developing a new free-flying robot system, “Astrobee", to perform Intravehicular Activity (IVA) work
+on the International Space Station (ISS) [1]. The Astrobee system includes three free-flying robots, a dock (for
+recharging electrical power and transferring large data files), and a ground data system that is used for
+communication, control and data transfer. Astrobee builds upon technology and lessons learned from the “Personal
+Satellite Assistant” (PSA) [2], the “Synchronized Position Hold, Engage, Reorient, Experimental Satellite”
+(SPHERES) [3], and the “Smart SPHERES” [4] robots.
+Free-flying space robots can be used when humans are present to off-load routine work, to increase crew
+productivity, and to handle contingencies. The International Space Station (ISS), for example, is an orbital
+laboratory the size of a large house, which has been manned continuously since 2000 and which contains thousands
+of inventory items and hundreds of diverse payloads and experiments – all of which have to be managed by a small
+(three to six person) crew.
+Astrobee incorporates robot technologies required for autonomous IVA operations (including flying mobility),
+remote operation by ground controllers, and human-robot interaction with crew [1]. These technologies include
+propulsion, navigation, co-located human interaction (proximal and remote), a supervisory control interface, and a
+payload interface. Astrobee will also be used to study concepts of operations for future deep space missions,
+including robotic caretaking of intermittently manned human spacecraft.
+We designed Astrobee to address three objectives:
+• Provide a microgravity robotic research facility in the ISS U.S. Orbital Segment (USOS), which will
+replace the existing ISS SPHERES facility. Astrobee includes multiple free-flying robots to support testing
+of cooperative and coordinated activities and payloads.
+ 1 Astrobee Project Manager, Intelligent Robotics Group.
+2 Astrobee Lead Engineer, Intelligent Robotics Group.
+3 Chief Roboticist, Intelligent Robotics Group.
+4 Astrobee Safety Lead, Intelligent Robotics Group.
+5 Astrobee Ground Data Systems Lead, Intelligent Robotics Group.
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517
+ 2018 SpaceOps Conference
+ 28 May - 1 June 2018, Marseille, France
+ 10.2514/6.2018-2517
+ This material is declared a work of the U.S. Government and is not subject to copyright protection in the United States.
+ SpaceOps Conferences 
+2
+• Provide remotely operated mobile camera views the ISS USOS. The primary intent of these views is to
+enhance the situation awareness of mission control, particularly of the ISS IVA environment, astronaut
+activities, and payload status.
+• Perform mobile sensor tasks in the ISS USOS. Example tasks include inventory using a RFID scanner and
+IVA surveys (sound levels, air quality, etc.).
+II. Sensing Needs on the ISS
+Monitoring the environment onboard the ISS is necessary to ensure the health and safety of the crew and
+maintain the health and longevity of the spacecraft. Currently, much of the environmental data is either collected
+from fixed location sensors, or by crew members through sensor surveys. Sensor surveys take up valuable crew
+time, and data from fixed location sensors could benefit from measurements taken at additional locations.
+Spacecraft are noisy environments; in fact, the systems that enable life in space are the primary and constant
+sources of noise. Studies have shown that this constant background noise is a contributing factor for crew fatigue,
+with effects such as forgetfulness, slowed reaction time, and confusion [5]. A loud environment can also interfere
+with voice communications and alarm audibility. For these reasons, sound level meter measurement (SLM) surveys
+by crew and acoustic noise dosimetry are routinely performed [6]. In a SLM survey, crew takes measurements at
+locations described in procedures, attempting to take the measurement as close to the described point as possible. A
+free-flying robot could relieve crew of the survey task with the added benefit of providing position data for each
+measurement to help localize noise sources.
+It is important to characterize the radiation field on the ISS, because radiation levels in Low Earth Orbit far
+exceed those present on Earth for occupational radiation workers [7]. Most radiation measurements are collected by
+passive or active sensors in fixed, sparse locations over long durations (months to years). This type of data could be
+supplemented with denser, though shorter duration, measurements from a mobile platform. The Radiation
+Environment Monitor (REM) hardware developed at the University of Houston and NASA Johnson Space Center
+[8] is an example of the sort of small, light-weight sensor that Astrobee could carry to create higher resolution maps
+of the ISS environment.
+Typical spacecraft carbon dioxide (CO2) concentrations can be 10 to 20 times that of the ambient outdoor CO2
+level on Earth. Excessive exposure to CO2 can lead to headache, visual disturbance, impaired mental function, and
+other central nervous system (CNS) symptoms [9]. Because air convection is significantly reduced in microgravity,
+localized pockets of higher concentration can occur. Recently a new wearable CO2 sensor has been evaluated on
+orbit to give better information on personal CO2 exposure [10]. As in the case of radiation monitoring, a mobile
+measurement device could supplement current sensors to create more complete maps of conditions on the ISS.
+The ISS crew spends a significant amount of time searching for items needed to perform a task. The Advanced
+Exploration Systems (AES) Logistics Reduction and Repurposing (LRR) Project is developing RFID technologies,
+3D localization strategies, and complex event processing (CEP) to enable automatic inventory tracking as resources
+move around a vehicle [11, 12]. The REALM-2 (RFID-Enabled Autonomous Logistics Management) RFID reader
+payload for Astrobee is currently in development. REALM-2 can leverage Astrobee’s motion capability to pinpoint
+the location of RFID-tagged items by monitoring variation in signal strength. LRR plans to use the mobile reader as
+part of an overall logistics management strategy that also includes fixed readers in hatchways and smart enclosures
+that can track their own contents.
+III. IVA Free Flyers
+a) SPHERES b) Int-Ball c) Artist’s concept of Astrobee
+Fig. 1 ISS IVA Free Flyers
+NASA JAXA/ISS/NASA NASA/Y. Kim
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+3
+When Astrobee launches at the end of 2018, it will be the fourth Intra-Vehicular Activity (IVA) free flyer to
+operate on ISS.
+A. SPHERES
+The Synchronized Position Hold Engage and Reorient Experimental Satellites (SPHERES) (Fig. 1a) have
+operated on ISS for over a decade, hosting many diverse experiments and educational activities through the facility’s
+Guest Science Program (GSP) [13]. While the SPHERES project has been hugely successful as a zero-g research
+platform, it has several characteristics that limit its usefulness for ISS operations.
+To successfully free up crew time by off-loading routine tasks, a free-flyer must be able to maneuver throughout
+Station while itself demanding minimal crew support. The SPHERES satellites, however, triangulate their position
+using infrared/ultrasonic beacons, preventing them from navigating outside the two-meter cube defined by the fixed
+beacon locations. The SPHERES satellites also use CO2 for propulsion. Crew must swap batteries and CO2 tanks
+manually on each satellite before every SPHERES test session. Crew must also spend time unpacking and stowing
+the SPHERES consumables and, later, repacking the empty tanks to be down-massed and refilled. Finally, safety
+considerations prevent the SPHERES satellites from being operated without crew supervision. Astrobee, on the
+other hand, has been designed specifically to fill these gaps, minimize burden on crew, and provide free-flying
+camera and sensor survey capabilities to support ISS operations.
+B. Int-Ball
+Developed by JAXA (Japan Aerospace Exploration Agency) and launched aboard SpaceX-9 in June 2017, the
+Japanese Experiment Module (JEM) Internal Ball Camera (Int-Ball) (Fig. 1b) is currently undergoing testing on ISS
+[14]. Int-Ball is a free flying still/video camera that is packaged into a 150 mm mobile sphere that has a mass of one
+kg. Int-Ball uses micro fans to control its position, and a combination of reaction wheels [15] and micro fans to
+control its attitude.6
+Int-Ball localizes itself using two markers in the JEM, in conjunction with an onboard camera and an ultrasonic
+distance sensor. Like SPHERES, Int-Ball cannot operate without a direct line-of-sight to its markers. Int-Ball can
+operate for approximately two hours before crew must plug it in to a USB charger. Int-Ball has a slightly bigger
+range than SPHERES and requires less crew time, but it is still fundamentally limited in its capabilities. JAXA is
+considering a second generation of Int-Ball that would not require cooperative markers to localize and that could
+self-charge by automatically docking itself to a wireless power supply.
+C. CIMON
+The Crew Interactive MObile companioN (CIMON) is a technology demonstrator that Airbus is building for the
+Deutsches Zentrum für Luft- und Raumfahrt (DLR), with a planned launch on SpaceX-15 in June 2018. CIMON is
+roughly spherical with a diameter of 32 cm and a mass of 5 kg [16]. Using IBM’s Watson AI technology to enable
+voice control, it will assist astronauts by displaying experiment instructions, maintenance procedures, and other
+documents and media.
+CIMON is equipped with multiple cameras, and it may be used as a mobile camera to document crew activities.
+Additionally, experimenters plan to use it to study human-machine interaction in the complex, stressful environment
+of ISS. Like Astrobee, CIMON uses vision-based navigation and can be operated by crew or teleoperated from the
+ground, or it can operate itself autonomously. Currently, CIMON’s range is restricted to the Columbus module. The
+Astrobee and CIMON teams are collaborating to make use of the same batteries.
+IV. Astrobee System Description
+The Astrobee project aims to develop a highly capable robot that can operate for long periods of time without
+astronaut supervision or intervention. A key to achieving this goal is to design an inherently safe system that can
+replenish its consumables autonomously. Astrobee’s fan-based propulsion system frees it from needing any
+consumables except for battery charge; it is able to replenish its charge by autonomously connecting to its docking
+station. An Astrobee robot is a 32 cm-on-a-side cube with a mass of approximately ten kg. (Fig. 2) We designed
+Astrobee to provide holonomic motion in six degrees of freedom, meaning it has the ability to move instantaneously
+in any direction and rotate about any axis. Because Astrobee is holonomic, it provides a nimble sensor platform that
+ 6 Video of crew installation of Int-Ball and example video captured by Int-Ball can be found on the JAXA website at
+http://iss.jaxa.jp/en/kiboexp/news/170714_int_ball_en.html.
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+4
+can move to nearly any location on the USOS, with any orientation. A detailed description of the Astrobee system
+can be found in [1]. In this section, we highlight features of particular relevance to ISS operations.
+A. Sensors
+In its baseline configuration, i.e. without any additional payloads in its payload bays, Astrobee uses a suite of six
+commercial off-the-shelf (COTS) external sensors (Fig. 2). The forward face includes the NavCam, which is a fixedfocus color camera with a wide field of view. Images from the NavCam inform the onboard visual navigation
+system and stream to the Control Station at 1 Hz to provide situation awareness to Astrobee’s operator. Astrobee’s
+forward face also includes the HazCam, which is a depth sensor that detects obstacles with LIDAR; and the SciCam,
+an auto-focus color camera that downlinks live HD video.
+Astrobee’s aft face houses the DockCam, a color camera nearly identical to the NavCam. The DockCam tracks
+fiducials on the Docking Station during autonomous docking maneuvers. The PerchCam is also on the aft face. The
+PerchCam is identical to the HazCam and it turns on to detect ISS handrails when Astrobee perches autonomously.
+Finally, as part of Astrobee’s strategy for minimizing collision risk, the top-facing SpeedCam sensor package
+provides an independent over-speed cutoff function, estimating velocity using its own optical flow, infrared ranging,
+and IMU sensors.
+Fig. 2 Astrobee robot. Left: Forward and left faces. Right: Top and left faces, with Perching Arm deployed.
+B. Communication
+During sorties, Astrobee accepts commands and sends telemetry and video through the ISS WiFi network and
+Ku-band downlink. Live downlinked data are sent through the Huntsville Operations Support Center (HOSC) to a
+server that relays telemetry and video to multiple Control Station instances running on ground computers. This
+HOSC server reduces downlink data bandwidth; each Astrobee sends only a single data stream to the ground, and
+multiple Control Stations monitor one robot by connecting to the server instead of to the robot directly.
+After a sortie, Astrobee transfers large files through a hard-wired Ethernet connection with its dock. The spaceto-ground network is subject to frequent losses of signal, meaning that any data recorded live on the ground will be
+incomplete because of communication dropouts. For this reason, Astrobee keeps onboard logs of all streaming data,
+so that users can downlink a complete copy after the activity.
+C. Position Estimation
+Astrobee can traverse the majority of the USOS by using a vision-based navigation system that compares
+existing features of the ISS interior with an on-board a priori map combined with inertial measurements [17].
+Cooperative markings (or fiducials) are used only for autonomous docking, in order to achieve the roughly 1 cm
+position accuracy needed for successful mating with the dock. Astrobee also uses visual odometry (or optical flow)
+that compares features across frames in the image stream. Visual odometry allows the robot to continue navigating
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+5
+for short distances across areas where no map features are recognized (for example, if part of a module was
+reconfigured since the last map update).
+Fig. 3 Astrobee Perching Arm pan range; yellow arrow indicates SciCam pointing direction
+D. Perching Arm
+Astrobee carries a perching arm in its top-aft bay that allows it to grasp ISS handrails and dwell for extended
+periods, so Astrobee can reduce its power consumption and its interference with ISS operations [18, 19]. The
+perching arm can also support future manipulation research.
+Astrobee’s perching arm has three degrees of freedom: two joints and a gripper. The joints allow the arm to stow
+completely within Astrobee’s top payload bay when not in use and deploy only for grasping. Once Astrobee grasps a
+handrail, it powers down its propulsion system, and its arm joints double as a pan-tilt unit for pointing the cameras
+located on the opposite (forward) side of the robot (Fig. 3).
+The arm is designed to be flexible and back-drivable. Its grip is not strong enough to injure the crew, and the
+crew can easily remove a perched Astrobee from a handrail if the robot is in the way during an emergency. The crew
+can also manually backdrive the gripper and arm to perch the robot on a handrail, as a convenient way to
+temporarily stow Astrobee when needed.
+E. Human-Robot Interaction
+Astrobee is designed to interact with people, including the ISS crew, flight controllers, and the general public
+(for example, during crew outreach videos). Astrobee will also be used for human-robot interaction research.
+Astrobee carries a touch screen, speaker and microphone, signal lights, and a laser pointer. Initially, Astrobee
+will use these components primarily to help crew understand its state and intentions (for example, by providing turn
+signals). Eventually, the touchscreen, audio capabilities, and lights could also provide video telepresence for flight
+controllers; the laser pointer can communicate a precise location to a crew member.
+Fig. 4 Astrobee Docking Station
+Fiducials
+Free Flyer Berth
+Cooling Fan
+Data Connector
+Power Connector
+Exhaust Scoop
+Main Power Switch
+Mounting Brackets
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+6
+F. Docking Station
+The Astrobee Docking Station, or dock, is approximately 85 cm x 38 cm x 28 cm, not including mounting
+bracketry. It has two berths, each providing power and Ethernet connectivity to one Astrobee robot (Fig. 4).
+When docking, Astrobee autonomously approaches its berth using visual servoing relative to fiducials mounted
+to the dock. Once contact is made, a system of conical lances (on the berth) and cups (on the robot) guides the final
+mating, accommodating up to about 1 cm of alignment error. The berth connector has 20 spring-loaded pogo pins
+that contact matching pads on the robot side. Compliance in the pins accommodates any remaining alignment error.
+When mating is complete, permanent magnets on the berth attract striker plates on the robot, providing a passive
+retention force. To enable undocking, linear actuators within the berths pull the magnets away from the striker
+plates, allowing the propulsion system to easily overcome the reduced magnetic force.
+Fig. 5 Astrobee Control Station: Run Plan Tab
+G. Ground Data System
+Operators monitor and command Astrobee through a user interface called the Control Station that runs on a
+laptop [20]. (Fig. 5) A simplified Crew Control Station is installed on two EXPRESS Laptop Computers (ELCs) on
+ISS so that Astrobee guest scientists can ask crew to control Astrobee as part of an experiment. However, in most
+cases a Control Station running on the ground controls Astrobee. ISS flight controllers, Astrobee research facility
+staff, and guest science researchers all use Control Station instances installed at their own institutions.
+The Astrobee Control Station provides tools for planning, execution monitoring, and supervisory control of up to
+three Astrobees. Operators use the Plan Editor tab in the Control Station to construct and validate sequences of
+commands for Astrobee (“.fplans”), that include waypoints and actions to perform at the waypoints. When the
+Control Station is connected to Astrobee, operators use the Run Plan tab to load and run their plans on Astrobee, and
+they can use the Teleoperate tab to send single commands (“teleoperate commands”) to Astrobee. The Control
+Station receives live telemetry whenever connectivity to the ISS is available. Both the Run Plan and Teleoperate
+tabs display the free-flyer’s estimated pose within a 3D model of the ISS, along with a status summary. Separate
+windows in the Control Station display streaming video or image frames from the SciCam, NavCam, and DockCam
+when requested, allowing the video to display on external monitors.
+If multiple Astrobees are active, the Control Station displays the positions of all of the Astrobees so that the
+operators are aware of the other activities and can avoid collisions. The Control Station also supports running plans
+on multiple Astrobees simultaneously. This feature was designed for guest scientists, but flight controllers may use
+it if they find it useful.
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+7
+The Control Station is based on the Surface Telerobotics Workbench used by ISS crew on-orbit to control a
+planetary rover on the ground at Ames Research Center in 2013 [21], and on the SmartSPHERES Workbench used
+to control the SPHERES satellites augmented by a smartphone [4]. We designed the Astrobee Control Station to be
+intuitive to use and to require no more than two hours of training to operate.
+The Astrobee Ground Data System (GDS) also includes servers for archiving and distributing Astrobee data, and
+a suite of engineering tools to support ongoing maintenance and upgrades of the Astrobee software.
+V. Concept of Operations
+Operators can supervise Astrobee from several ground locations, including the Mission Control Center (MCC) at
+Johnson Space Center, the Payload Operations Interface Center (POIC) at Marshall Space Flight Center, the MultiMission Operations Center (MMOC) at Ames Research Center, and guest science institutions such as universities.
+Astrobee’s capabilities as a mobile sensor platform provide several benefits to flight and payload operations.
+Flight controllers at MCC can use Astrobee as a mobile camera in order to improve ground situation awareness
+during crew activities. (Fig. 6) Operators can capture video during teleoperated flight in order to optimize viewing
+angles, or perch on a handrail and use the perching arm as a pan/tilt unit to reduce power consumption and noise.
+When controllers want to use Astrobee to take a sensor survey (see Section II), they will typically generate a preplanned set of survey stations, so Astrobee can conduct the survey fully autonomously from start to finish, requiring
+only partial attention from an operator for oversight, in case of anomalies.
+In the next section, we discuss the camera scenario as an example of a typical Astrobee sortie.
+Fig. 6 Concept of Astrobee perching for crew activity documentation
+A. Camera Scenario
+We worked closely with the Flight Operations Directorate (FOD) during the formulation of the Astrobee project
+to understand the ways FOD could use a free-flying robot. The flight controllers liked the idea of a camera onboard
+ISS that they could control, because it would improve their situation awareness without requiring crew time. We
+designed several of Astrobee’s features to create this capability.
+The following steps show one way a flight controller could use Astrobee to observe a crew activity.
+1. The Operations Support Officer (OSO) wants to observe and support a crew maintenance activity taking
+place in the US Lab.
+2. OSO contacts the Astrobee Facility to request an available free flyer, and schedules an Astrobee activity
+with ISS planners.
+3. Using the Plan Editor tab of the Control Station, OSO creates an Astrobee plan (GoToActivity.fplan) that
+includes the following steps: autonomously undock; fly through several waypoints in the JEM, Node 2, and
+US Lab to arrive at the location of the activity; fly to a handrail with a good vantage point over the activity;
+autonomously perch. OSO creates a second plan (ReturnToDock.fplan) that reverses these steps, returning
+to the dock after the observation is completed. OSO also checks that several handrails in the vicinity of the
+activity have preset locations in the Control Station in order to facilitate reperching Astrobee on other
+handrails if it becomes necessary. If there are no preset locations, OSO creates them using a dedicated tab
+in the Control Station.
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+8
+4. Approximately one hour before the activity, OSO uploads the GoToActivity plan to Astrobee and
+commands it to execute the plan using the Run Plan tab of the Control Station. (Fig. 5)
+5. Astrobee executes the GoToActivity plan while supervised by OSO, finishing by perching on the handrail
+and turning off its propulsion fans to save energy while it waits for crew to begin.
+6. At the start of the crew activity, OSO switches to the Teleoperate tab of the Control Station and commands
+Astrobee to begin streaming HD video from the SciCam. In the Control Station, OSO brings up the SciCam
+video viewer. OSO uses the Perching Arm controls in the Control Station to pan and tilt Astrobee to
+achieve a good view of the activity.
+7. Midway through the activity, the crew member turns to access a new piece of equipment, blocking the view
+from the Astrobee.
+8. OSO uses the Perching Arm controls to command Astrobee to unperch, then uses the Manual Commanding
+controls to command Astrobee to fly to the preset location near a handrail on the other side of the activity
+area and perch again. OSO readjusts the view using pan and tilt commands.
+9. During loss-of-signal (LOS) with the ground, Astrobee continues to hold its position while recording and
+storing video on its internal file system.
+10. Once ground signal has been reacquired, Astrobee resumes downlinking the live video stream to the
+Control Station.
+11. At the conclusion of the crew activity, OSO commands Astrobee to stop streaming SciCam video, returns
+to the Run Plan tab, uplinks the ReturnToDock plan, and commands Astrobee to Run the plan.
+12. Astrobee executes the ReturnToDock plan while supervised by OSO.
+13. Once Astrobee is docked, if an archive video without loss of signal is desired, OSO downlinks the recorded
+video file from Astrobee.
+B. Other Operational Considerations
+Three Astrobees will be launched to orbit, however the Astrobee Docking Station has only two berths. The third
+Astrobee remains stowed until it is needed for activities that require all three robots. Prior to those activities, the
+Astrobee Facility requests that crew charge several batteries from the on-orbit supply pool. Then, just before the
+activity starts, crew unstows the third Astrobee and installs the charged batteries.
+Each Astrobee accepts commands from only one Control Station at a time. However, additional Control Stations
+may monitor telemetry from multiple Astrobees and take control of them if necessary. This capability promotes
+safety if multiple Astrobee activities are occurring simultaneously. For example, a guest scientist may use one
+Control Station to conduct a payload experiment with one Astrobee, while a flight controller uses another Control
+Station to command a different Astrobee to search for a tool. Both the guest scientist and the flight controller can
+observe the motions of the other free-flyer, in addition to their own free-flyer, and watch for interference.
+Because of the number of Astrobee users, ISS operators need to schedule their use of Astrobee with the Astrobee
+Facility. We anticipate having at least one berthed free flyer available for flight/payload controllers at most times.
+VI. ISS Operational Challenges
+Like any technology development project, the Astrobee project has faced numerous technical and logistical
+challenges, some unique to a free-flying payload. Because it is mobile, Astrobee has effects on crew safety and
+privacy that are not associated with most payloads.
+A. Safety
+Whereas most payloads on ISS are either installed in a rack and stationary, or operated and/or closely supervised
+by crew, Astrobee will most often move about the USOS under autonomous or ground-teleoperated control. This
+new mode of operation means that crew will not necessarily be aware of the exact location of Astrobee at any given
+moment. Astrobee is programmed to stop when it detects an obstacle, but because crew can move much more
+quickly than Astrobee can maneuver, there is a risk of collision. Astrobee mitigates this risk to some extent by being
+light (~10 kg), slow (max speed 0.5 m/s), and soft (corner bumpers and foam padding on the propulsion modules).
+Additionally, we are considering using Astrobee’s lights and/or speaker to signal when it enters a hatchway, where
+collisions are most likely.
+However, our primary means to reduce this collision risk is to keep crew and flight personnel aware of all
+Astrobee operations using established operational techniques, including:
+• All Astrobee free flyer activities are in the Daily Plan. The timeline tells crew when and in which modules
+the free flyers will operate.
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+9
+• MCC reminds crew during daily conferences that Astrobee will be operating.
+• CapCom (Capsule Communication) provides calls as needed to remind crew that Astrobee is operating.
+Astrobee also has other safety features so that it does not injure crew if they come into contact with it. The
+propulsion units have screens covering their air intakes so they do not pull in astronauts’ hair. Similarly, grills cover
+the propulsion nozzles, which are relatively large, so that the nozzle flaps will not pinch fingers. Also, Astrobee’s
+electrical components all have thermal controls in accordance with touch temperature requirements.
+B. Privacy
+Astrobee has multiple cameras, some of which are always on whenever it is operating, for navigation and
+controller situation awareness. Because Astrobee can operate in any module of the USOS, the possibility of
+continuous monitoring creates a crew privacy issue. As in the case of collision safety, one way to reduce loss of
+privacy is to keep crew aware of Astrobee operations and make them aware of when it is streaming either video or
+audio.
+Astrobee’s fore and aft faces each have three dedicated status lights for audio and video. White “Vid” and “Live”
+LEDs indicate that cameras are in use and streaming, respectively. A blue “Aud” light tells the crew that the
+microphone is on. Only the Control Station operator receives a direct, live video stream from Astrobee. All other
+viewers (such as the MCC “Big Board” or the public) receive feeds through Johnson Space Center’s standard ISS
+video system, which has built in controls and protocols.
+Astrobee carries a microphone to enable voice interaction with the crew. Almost all microphones currently on
+ISS require push-to-talk. Live audio was a big concern for crew. To address this, in addition to the status lights on
+the fore and aft faces described above, one signal light on each of the propulsion modules will also shine blue
+whenever the microphone is on. No other signal will use the color blue. In this way, from nearly any direction, if a
+crewmember sees a blue light on Astrobee, he or she knows the microphone is on. There is no initial plan to make
+use of the microphone, other than to test that it works, and streaming video does not include audio. The capability is
+available for future use.
+Astrobee’s navigation and control systems understand the concept of a keep-out zone (KOZ). KOZs are defined
+as volumes within the USOS where Astrobee is not allowed to fly. They may include areas where, for example, a
+crew member is exercising, a medical experiment is in progress, a sensitive payload is operating, or fast-moving air
+from an exhaust vent might blow Astrobee off course. The Control Station warns operators when they create plans
+that translate through a KOZ, and it prevents operators from sending those plans to Astrobee until the violating
+segments are modified. The Control Station also refuses to send individual commands that enter a KOZ. As a final
+safeguard, Astrobee itself has an internal list of KOZs that it checks before moving. KOZs are specified in a
+configuration file that can be easily updated to reflect ISS environment changes or experiment-specific constraints.
+The Astrobee facility verifies that the proper KOZs are loaded onto Astrobee before and after Guest Science
+activities.
+C. Placement and Stowage
+The most limited resource on ISS is crew time, so we designed Astrobee to operate without crew specifically so
+that Astrobee can be used frequently. If Astrobee needed to be stowed between each activity, the benefits gained by
+autonomous docking and recharging would be severely limited. However, ISS is crowded with equipment, so
+“permanent” placement of the docking station has proven to be difficult.
+Since nearly the beginning of the Astrobee project in 2015, we have been working with the ISS Program Office
+and Boeing to find a location that would allow Astrobee to operate autonomously while creating the least impact to
+other ISS operations. The ISS Topology Group studied several possible locations and recommended the JEMPressurized Module Port Endcone, Aft (JPM1A7) as the best location for the dock. All other locations were in
+higher traffic areas or displaced a large amount of stowage.
+Early in 2018, after several discussions regarding interactions between the dock and existing fixtures and
+equipment in the area, JAXA agreed to host the Astrobee dock in the JEM, making autonomous operations possible.
+VII. Future Applications
+Beyond Astrobee's generalized guest science research capabilities, it can also be seen as a forerunner for future
+robots to support deep space exploration. Caretaker robots will be particularly critical during quiescent periods (i.e.,
+when spacecraft are uncrewed). As humans prepare to venture deeper into space, NASA plans to develop an
+intermittently crewed, lunar orbiting, “Gateway” facility [22]. The Gateway would serve as infrastructure for
+extended exploration of the Moon and as a launching point to more distant destinations. This facility could also be
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+10
+used as a platform for astrophysics, heliophysics, space life sciences, and distant Earth observation. A caretaker
+robot would allow monitoring, maintenance, and repair of such a facility before, and between, crews. Inspection
+functions can include:
+• Spot checks. When flight controllers have a question about something, they can use the robot to get an
+updated view, filling a role currently played by crew on ISS.
+• Surveys. The robot can periodically update multi-sensor 3D maps of the vehicle. Visual imaging, acoustics,
+thermal imaging, air quality, and RFID tracking can all help flight controllers understand system status.
+• Automated change detection and trending. Once a baseline sensor map is available, changes at the next
+update can indicate developing problems at an early stage.
+• Localizing problems. For example, if a leak produces a whistling sound, acoustic or ultrasonic sensors
+onboard the robot can be used to pinpoint its location.
+If a dexterous robotic manipulation capability is added, robots can potentially recover from previously
+catastrophic faults during uncrewed periods (e.g., patch a leak), perform regular maintenance, transfer cargo from
+uncrewed visiting vehicles, and generally off-load routine tasks from crew, allowing them more time to focus on
+mission objectives.
+VIII. Conclusion
+Astrobee provides a new tool on the ISS that increases the efficiency of flight and payload operations and
+improves crew safety. The characteristics of a mobile robot that is autonomous and teleoperated have created new
+challenges to payload development that we have met through system design and operational processes. Scheduled to
+launch in November 2018, Astrobee will undergo on-orbit testing, and be commissioned as a payload facility by
+mid-2019.
+Acknowledgments
+We would like to thank the ISS Payloads Office, the JSC Flight Operations Directorate, ISS Avionics and
+Software, the Advanced Exploration Systems program, and the ISS SPHERES team for their collaboration. We
+would especially like to thank Jason Crusan, Drew Hope, Mary Beth Wusk, Ryan Stephan, Steve Gaddis, and Kevin
+Kempton for their support. The NASA Game Changing Development Program (Space Technology Mission
+Directorate) and ISS SPHERES Facility (Human Exploration and Operations Mission Directorate) provided funding
+for this work.
+References
+[1] T. Smith, et al., “Astrobee: A New Platform for Free-Flying Robotics Research on the International Space Station,”
+Proceedings of International Symposium on Artificial Intelligence, Robotics and Automation in Space, 2016.
+[2] G. Dorais and Y. Gawdiak, “The Personal Satellite Assistant: An internal spacecraft autonomous mobile monitor,”
+Proceedings of IEEE Aerospace Conference, 2003.
+[3] D. Miller, A. Saenz-Otero, et al., “SPHERES: a testbed for long duration satellite formation flying in microgravity conditions”, Advances in the Astronautical Sciences, 2000.
+[4] T. Fong, M. Micire, et al., “Smart SPHERES: a telerobotic free-flyer for intravehicular activities in space,” AIAA-2013-
+5338, Proceedings of AIAA Space, 2013.
+[5] R. Scheuring, R. Moomaw, S. Johnston, “Fatigue in U.S. Astronauts Onboard the International Space Station:
+Environmental factors, Operational Impacts, and Implementation of Countermeasures,” Aerospace Medical Association
+Annual Scientific Meetings, 10-14 May 2015; Lake Buena Vista, FL.
+[6] C. Allen, S. Denham, “International Space Station Acoustics – A Status Report,” 41st AIAA International Conference on
+Environmental Systems, 17 - 21 July 2011, Portland, OR.
+[7] T. Berger, et al., “DOSIS & DOSIS 3D: long-term dose monitoring onboard the Columbus Laboratory of the International
+Space Station (ISS),” Journal of Space Weather and Space Climate, Vol. 6, A39, 11 Nov 2016.
+doi: 10.1051/swsc/2016034
+[8] N. Stoffle, et al., “Timepix-based radiation environment monitor measurements aboard the International Space Station,”
+Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated
+Equipment, Vol. 782, 11 May 2015, Pages 143-148.
+doi: 10.1016/j.nima.2015.02.016
+[9] J. Law, S. Watkins, D. Alexander, “In-Flight Carbon Dioxide Exposures and Related Symptoms: Association,
+Susceptibility, and Operational Implications,” NASA TP–2010– 216126, 2010.
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 
+11
+[10] T. Limero and W. Wallace, “What Air and Water Quality Monitoring Is Needed to Protect Crew Health on Spacecraft?”
+New Space, Vol. 5, No. 2, 1 Jun 2017.
+[11] P. Fink, et al., “Autonomous Logistics Management Systems for Exploration Missions,” AIAA SPACE Forum, 12 - 14 Sep
+2017, Orlando, FL.
+[12] J. Broyan, M. Ewert, P. Fink, “Logistics reduction technologies for exploration missions,” Proceedings of AIAA Space
+Conference and Exposition, 2014.
+[13] J. Enright, M. Hilstad, A. Saenz-Otero, and D. Miller, “The SPHERES guest scientist program: Collaborative science on the
+ISS,” Proceedings of IEEE Aerospace Conference, 2004.
+doi: 10.1109/AERO.2004.1367588
+[14] T. John, “An Adorable Floating Robot is Helping Astronauts on the ISS,” Times, July 17, 2017.
+[15] Mitani,	Shigeto,	Kanzawa and Yamanaka, “High-Agility, Miniaturized Attitude Control Sensors and Actuators in an
+All-in-one Module”,	ISTS30 Special Issue,	Vol. 14 (2016) No. 30.
+[16] DLR, “CIMON - the intelligent astronaut assistant,” http://www.dlr.de/dlr/en/desktopdefault.aspx/tabid-10212/332_read26307/#/gallery/29913, March 2, 2018.
+[17] B. Coltin, J. Fusco, Z. Moratto, O. Alexandrov, R. Nakamura, “Localization from Visual Landmarks on a Free-flying
+Robot,” Proceedings of IEEE/RSJ International Conference on Intelligent Robots and Systems, 2016.
+doi: 10.1109/IROS.2016.7759644
+[18] J. Yoo, I. W. Park, V. To, J. Lum, T. Smith, “Avionics and perching systems of free-flying robots for the International Space
+Station,” Proceedings IEEE International Symposium on Systems Engineering, 2015.
+doi: 10.1109/SysEng.2015.7302756
+[19] I. W. Park, et al., “Developing a 3-DOF compliant perching arm for a free-flying robot on the International Space Station,”
+Proceedings of IEEE International Conference on Advanced Intelligent Mechatronics, 2017.
+doi: 10.1109/AIM.2017.8014171
+[20] D. Wheeler. “Eclipse of the Floating Orbs: Controlling Robots on the International Space Station.” Eclipse Converge 2017.
+20 March, 2017, San Jose, CA.
+[21] M. Bualat, D. Schreckenghost, E. Pacis, T. Fong, D. Kalar, B. Beutter, “Results from Testing Crew-Controlled Surface
+Telerobotics on the International Space Station,” Proceedings of the 12th International Symposium on Artificial Intelligence,
+Robotics and Automation in Space, 2014.
+[22] J. Crusan, R. M. Smith, et al., “Deep Space Gateway Concept: extending human presence into cislunar space,” Proceedings
+of IEEE Aerospace Conference, 2018.
+Downloaded by 70.54.126.134 on October 2, 2022 | http://arc.aiaa.org | DOI: 10.2514/6.2018-2517 

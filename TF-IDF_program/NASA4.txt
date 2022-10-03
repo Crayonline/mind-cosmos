@@ -1,0 +1,1552 @@
+NAVAL
+POSTGRADUATE
+SCHOOL
+MONTEREY, CALIFORNIA
+THESIS
+ROBOTIC SPACECRAFT HOPPING:
+APPLICATION AND ANALYSIS
+by
+Katrina P. Alsup
+December 2018
+Thesis Advisor: Marcello Romano
+Co-Advisor: Josep Virgili-Llop (contractor)
+Approved for public release. Distribution is unlimited.
+THIS PAGE INTENTIONALLY LEFT BLANK
+REPORT DOCUMENTATION PAGE Form Approved OMB
+No. 0704-0188
+Public reporting burden for this collection of information is estimated to average 1 hour per response, including the time for reviewing
+instruction, searching existing data sources, gathering and maintaining the data needed, and completing and reviewing the collection of
+information. Send comments regarding this burden estimate or any other aspect of this collection of information, including
+suggestions for reducing this burden, to Washington headquarters Services, Directorate for Information Operations and Reports, 1215
+Jefferson Davis Highway, Suite 1204, Arlington, VA 22202-4302, and to the Office of Management and Budget, Paperwork Reduction
+Project (0704-0188) Washington, DC 20503.
+1. AGENCY USE ONLY
+(Leave blank)
+2. REPORT DATE
+December 2018
+3. REPORT TYPE AND DATES COVERED
+Master's thesis
+4. TITLE AND SUBTITLE
+ROBOTIC SPACECRAFT HOPPING: APPLICATION AND ANALYSIS
+5. FUNDING NUMBERS
+RMM4L
+6. AUTHOR(S) Katrina P. Alsup
+7. PERFORMING ORGANIZATION NAME(S) AND ADDRESS(ES)
+Naval Postgraduate School
+Monterey, CA 93943-5000
+8. PERFORMING
+ORGANIZATION REPORT
+NUMBER
+9. SPONSORING / MONITORING AGENCY NAME(S) AND
+ADDRESS(ES)
+NRO, VA
+10. SPONSORING /
+MONITORING AGENCY
+REPORT NUMBER
+11. SUPPLEMENTARY NOTES The views expressed in this thesis are those of the author and do not reflect the
+official policy or position of the Department of Defense or the U.S. Government.
+12a. DISTRIBUTION / AVAILABILITY STATEMENT
+Approved for public release. Distribution is unlimited.
+12b. DISTRIBUTION CODE
+A
+13. ABSTRACT (maximum 200 words)
+This thesis will explore the hopping mobility approach for robotic vehicles used in Intra-Vehicular
+Activities (IVA) as an alternative mobility in space for small spacecraft equipped with robotic manipulators.
+A hopping maneuver uses the robotic manipulator to hop between two locations inside the host spacecraft.
+The maneuver is defined as three distinct phases: push, free-flying coast, and soft landing. Maneuvers such
+as hopping will be used to quickly move from one part of the host spacecraft to another, with little to no fuel
+consumption compared to zero-g climbing and propulsive free-flying.
+This thesis answers the question, “Is there an ideal mobility for use in space that uses zero propellant?”
+The concept of an IVA hopping maneuver was explored, analyzed and experimentally demonstrated in
+simulation. Simulation results of such a maneuver validate hopping as a mobility approach in space. Future
+work includes ground testing of the hopping maneuver and implementation onboard the International Space
+Station to demonstrate an on orbit–hopping maneuver.
+14. SUBJECT TERMS
+rendezvous, relative motion, proximity missions, formation flying, robotics, spacecraft,
+mobility in space, hopping
+15. NUMBER OF
+PAGES
+81
+16. PRICE CODE
+17. SECURITY
+CLASSIFICATION OF
+REPORT
+Unclassified
+18. SECURITY
+CLASSIFICATION OF THIS
+PAGE
+Unclassified
+19. SECURITY
+CLASSIFICATION OF
+ABSTRACT
+Unclassified
+20. LIMITATION OF
+ABSTRACT
+UU
+NSN 7540-01-280-5500 Standard Form 298 (Rev. 2-89)
+Prescribed by ANSI Std. 239-18
+i
+THIS PAGE INTENTIONALLY LEFT BLANK
+ii
+Approved for public release. Distribution is unlimited.
+ROBOTIC SPACECRAFT HOPPING: APPLICATION AND ANALYSIS
+Katrina P. Alsup
+Lieutenant, United States Navy
+BS, University of Washington, 2013
+Submitted in partial fulfillment of the
+requirements for the degree of
+MASTER OF SCIENCE IN ASTRONAUTICAL ENGINEERING
+from the
+NAVAL POSTGRADUATE SCHOOL
+December 2018
+Approved by: Marcello Romano
+Advisor
+Josep Virgili-Llop
+Co-Advisor
+Garth V. Hobson
+Chair, Department of Mechanical and Aerospace Engineering
+iii
+THIS PAGE INTENTIONALLY LEFT BLANK
+iv
+ABSTRACT
+This thesis will explore the hopping mobility approach for robotic vehicles used
+in Intra-Vehicular Activities (IVA) as an alternative mobility in space for small
+spacecraft equipped with robotic manipulators. A hopping maneuver uses the robotic
+manipulator to hop between two locations inside the host spacecraft. The maneuver is
+defined as three distinct phases: push, free-flying coast, and soft landing. Maneuvers such
+as hopping will be used to quickly move from one part of the host spacecraft to another,
+with little to no fuel consumption compared to zero-g climbing and propulsive
+free-flying.
+This thesis answers the question, “Is there an ideal mobility for use in space that
+uses zero propellant?” The concept of an IVA hopping maneuver was explored, analyzed
+and experimentally demonstrated in simulation. Simulation results of such a maneuver
+validate hopping as a mobility approach in space. Future work includes ground testing of
+the hopping maneuver and implementation onboard the International Space Station to
+demonstrate an on orbit–hopping maneuver.
+v
+THIS PAGE INTENTIONALLY LEFT BLANK
+vi
+vii
+TABLE OF CONTENTS
+I. INTRODUCTION..................................................................................................1
+A. ZERO-G CLIMBING MOBILITY APPROACH..................................1
+B. PROPULSIVE FREE-FLYING MOBILITY APPROACH..................4
+C. ROBOTIC MANIPULATORS.................................................................6
+D. THE HOPPING MOBILITY APPROACH............................................9
+E. EVOLUTION OF THE ASTROBEE PROJECT.................................10
+1. Astrobee’s Precursor: SPHERES...............................................10
+2. Astrobee Anatomy .......................................................................11
+3. Astrobee’s Current Mission Capabilities...................................12
+F. PREVIOUS WORK.................................................................................12
+G. THESIS OVERVIEW .............................................................................13
+II. IVA ROBOTIC SPACECRAFT HOPPING.....................................................15
+A. HOPPING: A THREE-PHASED MANEUVER...................................15
+B. FORMULATION.....................................................................................16
+1. Equations of Motion of a Free-Flying Robotic Multibody
+System ...........................................................................................16
+2. Equations of Motion During the Push .......................................18
+3. Equations of Motion During the Free-Flying Coast.................18
+4. Equations of Motion During the Landing .................................19
+C. PLANNING A HOPPING MANEUVER ..............................................20
+1. Direct Hopping Problem .............................................................20
+2. Inverse Hopping Problem ...........................................................21
+D. CONCLUSION ........................................................................................22
+III. SIMULATED HOPPING MANEUVERS WITH THE ASTROBEE
+FREE-FLYER......................................................................................................23
+A. ASTROBEE..............................................................................................23
+B. A PLANAR HOP WITH ASTROBEE ..................................................29
+C. SIMULATION EXPERIMENT WITH ASTROBEE..........................29
+D. INITIALIZATION MODE.....................................................................33
+1. Inputs ............................................................................................34
+2. Outputs..........................................................................................35
+3. Completion Criteria.....................................................................35
+E. PUSH MODE ...........................................................................................35
+1. Inputs ............................................................................................35
+2. Outputs..........................................................................................36
+viii
+3. Completion Criteria.....................................................................36
+F. FREE-FLYING PASSIVE COAST MODE..........................................36
+1. Inputs ............................................................................................36
+2. Outputs..........................................................................................37
+3. Completion Criteria.....................................................................37
+G. FREE-FLYING COAST ACTIVE MODE ...........................................37
+1. Inputs ............................................................................................37
+2. Outputs..........................................................................................38
+3. Completion Criteria.....................................................................38
+H. SELF-STABILIZER MODE ..................................................................39
+1. Inputs ............................................................................................39
+2. Outputs..........................................................................................39
+3. Completion Criteria.....................................................................40
+I. LANDING MODE ...................................................................................40
+1. Inputs ............................................................................................40
+2. Outputs..........................................................................................41
+3. Completion Criteria.....................................................................41
+J. CONCLUSION ........................................................................................41
+IV. SIMULATION RESULTS..................................................................................43
+A. HARD-LANDING HOPPING SIMULATION.....................................43
+B. SOFT-LANDING HOPPING SIMULATION......................................46
+C. CONCLUSION ........................................................................................50
+V. PLANNED ISS EXPERIMENT.........................................................................51
+A. CONCEPT OF OPERATION ................................................................51
+B. QUALITY OF THE EXPERIMENT.....................................................52
+C. PLAN OF IMPLEMENTATION...........................................................52
+D. FLIGHT REQUIREMENTS ..................................................................53
+E. TRANSITION PLAN ..............................................................................53
+F. MILITARY RELEVANCE.....................................................................53
+VI. CONCLUSIONS ..................................................................................................55
+A. FUTURE WORK.....................................................................................55
+B. RESEARCH SIGNIFICANCE...............................................................56
+LIST OF REFERENCES................................................................................................59
+INITIAL DISTRIBUTION LIST...................................................................................63
+ix
+LIST OF FIGURES
+Figure 1. Robonaut 1. Source: Rehnmark et al. (2004)...............................................2
+Figure 2. Robonaut 2. Source: NASA (2018). ............................................................3
+Figure 3. AERCam. Source: Chen et al. (2013)..........................................................4
+Figure 4. JAXA Int-Ball. Source: Japan Aerospace Exploration Agency
+(2017)...........................................................................................................5
+Figure 5. Artist Rendition of Dextre Attached to Canadarm2 Operating from
+the Mobile Base System on ISS. Source: Coleshill et al. (2009).................7
+Figure 6. Artist Rendition of Dextre. Source: Coleshill et al. (2009). ........................7
+Figure 7. SPHERES Experiment inside the ISS. Source: NASA, SPHERES
+(2017).........................................................................................................11
+Figure 8. Astrobee Anatomy. Source: NASA (2017). ..............................................12
+Figure 9. Experimental Demonstration of a Hopping Maneuver at the NPS
+Planar Air Bearing Test-Bed. Source: Bradstreet (2017). .........................13
+Figure 10. Schematic of Maneuver. ............................................................................15
+Figure 11. Hopping Spacecraft Definitions.................................................................20
+Figure 12. Named Links of Astrobee from Side View................................................24
+Figure 13. Named Links of Astrobee from Bottom View...........................................25
+Figure 14. Gripper Links in the Closed Position with Astrobee in the Perch
+Configuration. ............................................................................................25
+Figure 15. Gripper Links in the Open Position. View from the Top of Astrobee.......26
+Figure 16. Pan range of -90° to 90° for Astrobee. Source: Park et al. (2017).............26
+Figure 17. Tilt range of -30° to 90° for Astrobee. Source Park et al. (2017)..............27
+Figure 18. Linear Velocity Envelope [m/s].................................................................28
+Figure 19. Linear Velocity Envelope [m/s].................................................................28
+Figure 20. Schematic of Astrobee Completing a Hard-Landing.................................31
+x
+Figure 21. Schematic of Astrobee Completing a Soft-Landing. .................................33
+Figure 22. Astrobee Perched on ISS Handrail in Simulated ISS Environment. .........34
+Figure 23. Schematic of Astrobee Completing a Hard-Landing.................................44
+Figure 24. Location of Base during Hard-Landing Hopping Maneuver.....................44
+Figure 25. Hard-Landing Proximal Joint Position ......................................................45
+Figure 26. Forces During Push Phase of Hard-Landing Hopping Maneuver. ............46
+Figure 27. Schematic of Astrobee Completing a Soft-Landing. .................................47
+Figure 28. Location of Base during Soft-Landing Hopping Maneuver. .....................48
+Figure 29. Soft-Landing Proximal Joint Position........................................................49
+Figure 30. Forces during the Push Phase of Soft-Landing Hopping Maneuver..........50
+Figure 31. POSEIDYN Testbed. Source: Virgili-Llop (2016)....................................55
+xi
+LIST OF TABLES
+Table 1. Comparative Study of SSRMS, JEMRMS and ERA. Source:
+Adopted from Patten et al. (2002)................................................................8
+Table 2. Name Association for the Six Joint Positions of Astrobee. Source:
+NASA (2018).............................................................................................24
+Table 3. Astrobee Manipulator: Mass and Inertia Parameters. Source: NASA
+(2018).........................................................................................................27
+Table 4. Hard-Landing Correlation between Height and Range Via the
+Release Configuration of the Arm Proximal Joint.....................................30
+Table 5. Soft-Landing Correlation between Height and Range Via the Release
+Configuration of the Arm Proximal Joint. .................................................32
+Table 6. Five Approved Experiment Sessions Onboard ISS. ..................................52
+xii
+THIS PAGE INTENTIONALLY LEFT BLANK
+xiii
+LIST OF ACRONYMS AND ABBREVIATIONS
+DOF
+ERA
+EVA
+GEO
+ISS
+IVA
+JEM
+JEMRMS
+LEO
+LIDAR
+MBS
+MSS
+NASA
+NPS
+S/C
+SERB
+SPDM
+SPHERES
+SRL
+SRMS
+SSRMS
+Degree of Freedom
+European Robotic Arm
+Extra-Vehicular Activity
+Geosynchronous Earth Orbit
+International Space Station
+Inter-Vehicular Activity
+Japanese Experiment Module
+Japanese Experiment Module Remote Manipulator System
+Low Earth Orbit
+Light Detection and Ranging
+Mobile Base System
+Mobile Servicing System
+National Aeronautics and Space Administration
+Naval Postgraduate School
+Spacecraft
+Space Experiments Review Board
+Special Purpose Dexterous Manipulator
+Synchronized Position Hold, Engage, Reorient, Experimental
+Satellites
+Spacecraft Robotics Laboratory
+Shuttle Remote Manipulator System
+Space Station Remote Manipulator System
+xiv
+THIS PAGE INTENTIONALLY LEFT BLANK
+xv
+ACKNOWLEDGMENTS
+First, and foremost, I would like to thank Dr. Josep Virgili-Llop for your guidance
+and enthusiasm in my research project. I appreciate the countless hours you spent tutoring
+me and guiding my research to what is today. Words can’t express how valuable your
+mentorship was on my academic career. Thank you.
+I would next like to thank Jessica Shapiro, Justin Komma and additionally Jonathan
+Lang. From day one of this research project, through the ups and downs, you have been
+there to support me. Thank you for your support and constant encouragement day-in and
+day-out.
+Next, I would like to thank, Dr. Marcello Romano. Thank you for accepting me to
+be a part of this team. The opportunity to work on this project was more than I ever dreamed
+of. Thank you.
+Lastly, I want to recognize my family. You are my rock and my support through
+everything I do. Countless times I have called on each of you for your words of wisdom
+and sweet words of encouragement. Thank you all for being my biggest supporters. I am
+where I am because of you.
+xvi
+THIS PAGE INTENTIONALLY LEFT BLANK
+1
+I. INTRODUCTION
+This thesis addresses the exploration of mobility in space and the versatility of
+robotic spacecraft in future space exploration. Robotics have been a cornerstone in space
+and will continue to be a vehicle for interplanetary mobility. Robotics provide a resilient
+platform that is able to operate in extreme environments where humans are not able to
+survive. The ability to operate in extreme temperatures makes robotics the ideal vessel to
+manipulate and adapt to the ever-changing environments that are present in interplanetary
+exploration.
+Current mobility approaches for robotic vehicles in space can be categorized into
+two distinct approaches: 1) zero-g climbing and 2) propulsive free-flying. This thesis
+introduces hopping as an alternative mobility method for maneuvering of small spacecraft
+equipped with robotic manipulators. Mobility of such vehicles are the topic of on-going
+research in regards to on-orbit servicing of satellites, mining of planetary and asteroid
+bodies, space debris removal and construction of large apertures on-orbit. NASA has been
+exploring on-orbit servicing since 1973, when astronauts used a servicing vehicle to repair
+a heat shield (Ticker et al. 2015). The most prominent of the mission sets include, ETS-VII
+(Yoshida 2003), Orbital Express (Shoemaker and Wright 2004), and Canadarm
+(Sallaberger 1997). Hopping addresses the limitations of zero-g climbing and propulsive
+free-flying and provides an alternative propellantless mobility in space.
+A. ZERO-G CLIMBING MOBILITY APPROACH
+In a zero-g climbing approach, the spacecraft uses its robotic arms to transverse the
+host spacecraft by grasping onto the host spacecraft and moving between each location in
+a similar manner an astronaut would transverse in space. A humanoid robot was built by
+National Aeronautics and Space Administration’s (NASA) Johnson Space Center.
+Robonaut 1 (Figure 1) consisted of two arms, two hands, one leg, and a camera for a head
+(Rehnmark et al. 2004). The robot would crawl outside the space station via the handrails
+that are used by astronauts to maneuver around the International Space Station (ISS)
+structure. The purpose of the robot was to operate in space and alleviate the maintenance 
+2
+workload of astronauts by pairing with other robots to assist the astronauts during space
+walks (Ambrose et al. 2000). This zero-g climbing approach is slow (1.016 cm/s) and
+limited in its capability due to the need of specialized handrails for the Robonaut hands to
+grasp and the limited number of handrails available around the exterior of the space station
+(Rehnmark et al. 2004). Robonaut 2 was launched to the ISS in February 2011 (Ambrose
+et al. 2000). The updated Robonaut 2 (Figure 2) added an additional leg to Robonaut 1 as
+well as additional sensors and faster maneuverability times with a limb speed of 2 m/s
+(NASA, 2018).
+Figure 1. Robonaut 1. Source: Rehnmark et al. (2004).
+3
+Figure 2. Robonaut 2. Source: NASA (2018).
+The limitation of zero-g climbing mobility approach is the dependence on constant
+contact with the host spacecraft structure. To maneuver from one side of the host spacecraft
+to the other would require climbing the perimeter of the host spacecraft. This movement is
+slow in a translational direction along the edges of host structure and is limited to regions
+of the host spacecraft where there are specialized handrails installed. 
+4
+B. PROPULSIVE FREE-FLYING MOBILITY APPROACH
+The propulsive free-flying mobility approach enables spacecraft to maneuverer
+quickly in space. In this alternative approach, the spacecraft utilizes the limited supply of
+propellant carried onboard to move from one location to the next using onboard guidance
+and navigation systems. One example of an external propulsive free-flying approach can
+be found in the Autonomous Extravehicular Robotic Camera (AERCam) (Figure 3),
+developed by NASA. AERCam was a free-flyer spacecraft tested in 1997 as a remote
+camera capable of inspection of the external surfaces of the ISS (Chen et al. 2013).
+Designed for external use, the propellant onboard provides the only fuel to maneuver the
+spacecraft.
+Figure 3. AERCam. Source: Chen et al. (2013).
+The Japanese Space Agency created Internal Ball Camera (Int-Ball) (Figure 4), is
+another example of a propulsive free-flyer for similar observatory uses internal to the ISS.
+The small free-flyer is capable of capturing images previously unable to be captured by
+astronauts due to the location of the wall mounted cameras onboard the ISS (Japan 
+5
+Aerospace Exploration Agency, 2017). Int-ball reduces the time requirements of the
+astronauts to do the simple task of taking photos or videos thus freeing up the crew’s time
+to conduct other experiments. As a free-flyer, the robot moves autonomously to
+predetermined positions for capturing images and videos with the intention of eliminating
+crew involvement in such activities. Unlike the AERCam, Int-ball is exclusively used for
+internal observations and, as such, has the added environment of air flow inside the ISS.
+Figure 4. JAXA Int-Ball. Source: Japan Aerospace Exploration
+Agency (2017).
+In addition to these free-flyers, other robotic spacecraft assist astronauts in routine
+tasks and gather multimedia data via their onboard sensors. A new addition onboard the
+ISS, the Crew Interactive MObile companioN (Cimon) is an experiment developed to assist
+astronauts in maintenance, experimentation, and motor skills with the added capability of
+access to saved files via voice commands (NASA, 2018). As the program comes online,
+more information will be available on the value Cimon may have on assisting the crew.
+The free-flying mobility approach is versatile and has the ability to maneuver
+quickly. The limitations of such robotic spacecraft is the limited fuel onboard. Once the
+fuel supply has been depleted, the spacecraft must be refueled to continue mission tasking. 
+6
+The mission tasking has to be prioritized based on the available fuel remaining, which
+limits the capabilities of mission the robotic vehicle can perform.
+C. ROBOTIC MANIPULATORS
+Robotic manipulators have expanded the capability of structures built in space and
+reduced the risk to astronauts by limiting EVA. The length of the robotic manipulators
+extends the reach that would be achievable by an astronaut alone. Robotic manipulators
+enhance the capabilities of robotic spacecraft and in terms of mobility, create a subcategory to be explored in regards to mobility in space.
+Canada has contributed multiple systems in support of furthering mobility in space,
+in particular modifications to the Shuttle and ISS. The collection of robotic systems
+developed by Canada is the Mobile Servicing System (MSS)( Figure 5), which includes
+the Mobile Base System (MBS), the Space Station Remote Manipulator System (SSRMS),
+and the Special Purpose Dexterous Manipulator (SPDM). Not included in the MSS onboard
+the ISS is the Shuttle Remote Manipulator System (SRMS) or Canadarm for short is yet
+another contribution to space robotic manipulators by Canada. The Canadarm is 15 meters
+in length with six joints to support Space Shuttle operations (Sallaberger 1997 pg 240).
+The SSRMS or Canadarm2 is 17.1 meters in length with seven joints to support Space
+Station operations (Sallaberger 1997, pg 41). Special Purpose Dexterous manipulator
+(SPDM) or Dextre is two meters in length for each arm with seven joints in each arm and
+the ability to conduct a degree of freedom with a body roll was built to support ISS
+operations (Sallaberger 1997, pg 241) seen in Figure 6. Advances in robotics have enabled
+the continued development of large structures in space. The long reach of the robotic
+manipulator help astronauts assemble structures in space with minimal mobility on the part
+of the astronaut. Safety of the astronauts in space is a top priority and a way to decrease
+the risk includes minimizing astronaut EVA.
+7
+Figure 5. Artist Rendition of Dextre Attached to Canadarm2
+Operating from the Mobile Base System on ISS. Source:
+Coleshill et al. (2009).
+Figure 6. Artist Rendition of Dextre. Source: Coleshill et al. (2009).
+8
+Canada was not the only contributor of a robotic arm to the ISS. The Japanese
+Experiment Module (JEM) Remote Manipulator System (JEMRMS) and the European
+Robotic Arm (ERA) were both robotic arms to the ISS. Table 1 provides a side-by-side
+comparison of the three robotic arms developed for the ISS.
+Table 1. Comparative Study of SSRMS, JEMRMS and ERA.
+Source: Adopted from Patten et al. (2002).
+SSRMS JEMRMS (MA) ERA
+SPAN 14.22 m 9.91 m 11.3 m
+Boom Span 7.11 m 3.93 m and 3.94 m 7.77 m
+DOF’s 7 6 7
+Joints Offset Offset Inline
+Base Relocatable Fixed Relocatable
+Mass 1336 kg 757 kg 630 kg
+Max Holding Capacity 116,000 kg 7,000 kg 8,000 kg
+Translation (at max capacity) 12 mm/sec 20 mm/sec 10 mm/sec
+Rotation (at max capacity) 0.04 deg/sec 0.5 deg/sec 0.15 deg/sec
+Developed by National Space Development Agency of Japan (NASDA)
+Engineering Test Satellite VII (ETS-VII) demonstrated on-orbit capabilities with a 2-
+meter-long arm and six degrees of freedom (DOF) manipulator mounted on a host
+spacecraft. The objective of the on-orbit testing was to demonstrate the ability of
+rendezvous, docking and on-orbit servicing. The objective of this experiment extended to
+the concept of a manipulator moving without disturbing the base-spacecraft.
+9
+The limitation of robotic manipulators is the reliance of humans in the loop. The
+astronauts require precision maneuvers and, thus, require extensive training on each of the
+robotic systems and their respective manipulators.
+D. THE HOPPING MOBILITY APPROACH
+Mobility in space is limited in both speed and fuel consumption. A hopping
+maneuver is a new mobility approach that alleviates the limitations of zero-g climbing
+approach (speed) and free-flyer (limited propellant) and the human in the loop requirement
+that current robotic manipulators in space require. A hopping mobility approach is defined
+when a spacecraft uses the forces applied by the manipulator to push-off and “jump”
+between two locations. A hopping maneuver is comprised of three phases: push, free-flying
+coast, and a soft-landing at the final location. This maneuver has the potential to be
+propellantless and faster than existing mobility approaches.
+This thesis will address the question, is there an ideal mobility for use in space that
+uses zero propellant? A hopping mobility approach is introduced as a potential alternative
+mobility approach to zero-g climbing and free-flying for robotic spacecraft equipped with
+a robotic manipulator. Spacecraft equipped with a robotic arm provide a versatility for a
+wide range of space missions including servicing other spacecraft, assembly of large
+structures, removal of orbital debris and assisting astronauts with routine tasks.
+Hopping maneuvers are not a new field of study but rather have been extensively
+researched for planetary exploration by Burdick’s “Minimalist Jumping Robotics for
+celestial Exploration,” Ulamec’s “Hopper Concepts for Small Body Landers,” and
+Hockman’s “Stochastic Motion Planning for Hopping Rovers on Small Solar System
+Bodies” to name a few. The concept focused on exploiting the gravity or lack of gravity on
+other planets and how a hopping mobility approach could speed up travel time by covering
+much larger distances in shorter amounts of time. Additionally, other planets have vastly
+different terrains that typical travel on wheels might be difficult to travel on, hopping would
+alleviate this difficulty. The concept of hopping does not need to be limited to terrestrial
+mobility but is researched in this thesis as a means of mobility in space, utilizing the same
+concept of exploiting the lack of gravity to the advantage of the vehicle. To demonstrate 
+10
+the hopping maneuver presented in this thesis, the Astrobee free-flyer developed by NASA
+- Ames Research Center will be utilized as a platform to demonstrate the mobility
+approach. Using the components installed on Astrobee, software was developed to exploit
+and utilizes the onboard components to maneuver Astrobee propellantlessly.
+E. EVOLUTION OF THE ASTROBEE PROJECT
+The Astrobee free-flyer is a robotic spacecraft developed as a platform for guest
+scientist research onboard the ISS. The Astrobee robotic spacecraft is an evolutionary
+project that originated with the Synchronized Position Hold Engage and Reorient
+Experiment Satellites (SPHERES).
+1. Astrobee’s Precursor: SPHERES
+SPHERES is a product of the MIT Space Systems Laboratory delivered by NASA
+mission Expedition 8 to the ISS and remains an active experiment onboard. SPHERES
+(Figure 7) consists of three free-flying robotic spacecraft, provide an educational platform
+for researchers to test navigation, maneuvering, and guidance control implementation on
+multiple spacecraft simultaneously (McCamish et al. 2009). Shaped like spheres, these
+satellites fly inside the ISS and test autonomous rendezvous and docking maneuvers. The
+SPHERES research platform laid the groundwork for the next generation of robotics in
+space like NASA’s free-flyer, Astrobee (NASA, International Space Station Basics).
+11
+Figure 7. SPHERES Experiment inside the ISS. Source: NASA,
+SPHERES (2017).
+SPHERES requires constant astronaut supervision during all experiments. Astrobee
+will serve as the replacement to SPHERES and builds off many of the same features as
+AERCam and PSA in respect to free-flying capabilities. Due to the autonomous free-flying
+ability that Astrobee is projected to have, will require little to no astronaut supervisor which
+would alleviate the consuming time demands of the SPHERES experiments (Smith et al.
+2016).
+2. Astrobee Anatomy
+Astrobee is a free-flying autonomous robot designed for Inter-Vehicular Activity
+(IVA) inside the ISS. The basic components of Astrobee are identified in Figure 8. The
+mechanical arm pictured is the manipulator developed by the NASA team. NPS colleagues
+are researching a more dexterous manipulator for Astrobee but the software for this thesis
+was developed with initial NASA manipulator arm. 
+12
+Figure 8. Astrobee Anatomy. Source: NASA (2017).
+3. Astrobee’s Current Mission Capabilities
+The current mission capability for Astrobee is to use its manipulator arm to perch
+itself. Astrobee has installed fans to propel and stabilize itself. Each unit is equipped with
+camera for experiment observations and Light Detection and Ranging (LIDAR) features to
+enable the vehicle to maneuver throughout the space station (autonomously) (Smith et al.
+2016). From the perched position, the camera can focus on the astronauts during scientific
+research and testing. Astronauts can maneuver the spacecraft to any handrail that would be
+best for viewing the experiment. The range of motion of the manipulator arms suggests
+that Astrobee could actuate the manipulator over the range to ramp up the velocity on the
+joints and push itself from handrail to handrail.
+F. PREVIOUS WORK
+This thesis is a continuation of previous work done by Naval Postgraduate School
+(NPS) thesis student Andrew Bradstreet, whose thesis work explored the study of a push
+and planar hopping maneuver of robots (Bradstreet 2018). The platform for this planar
+hopping maneuver was Manipulator Satellite (ManiSat), the Spacecraft Robotics
+Laboratory’s (SRL’s) Floating Spacecraft Simulator (FSS). Bradstreet performed both 
+13
+simulations and hardware testing on the SRL’s test-bed, Proximity Operation of
+Spacecraft: Experimental hardware-In-the-loop Dynamic Simulator (POSEIDYN). The
+goal of his experiments was to prove the feasibility of a propellantless push/catch
+maneuver. ManiSat, performed a self-toss from the left handrail with the direction of
+motion to the right handrail as pictured in Figure 9. The floating robot entered a free-flying
+coast upon the gripper’s release of the handrail until ManiSat reached the opposite handrail,
+at which time executed a soft-landing. The results of the experiment validate the hopping
+maneuver and its ability to propellantlessly maneuver a spacecraft.
+Figure 9. Experimental Demonstration of a Hopping Maneuver at the
+NPS Planar Air Bearing Test-Bed. Source: Bradstreet (2017).
+G. THESIS OVERVIEW
+This unique hopping maneuver, developed at NPS, will be the first on-orbit
+demonstration of a non-traditional maneuver approach. This thesis will cover both the
+theory and formulation of the control algorithms used and the implementation of the
+controllers. The following chapters will outline the development, simulation, testing, and
+concept of operations for an on-orbit demonstrations of the hopping maneuver of NASA -
+Ames Research Center’s free-flyer, Astrobee. Chapter II provides formulation of the
+general hooping mobility approach. Chapter III explains in detail the simulation
+experiments. Chapter IV will present the results of the experiments. Chapter V will explain
+the implementation of the hopping maneuver onboard the ISS and provide a detailed
+concept of operation for the ISS experiments. Chapter VI will be all conclusions from this
+thesis. 
+14
+THIS PAGE INTENTIONALLY LEFT BLANK
+15
+II. IVA ROBOTIC SPACECRAFT HOPPING
+Here the equation of motion formulation and guidance strategy for an IVA hopping
+maneuver is presented in detail. To help in the formulation, the maneuver divides into three
+phases: push, free-flying coast, and soft-landing. Each phase outlines in detail with the
+governing equations derived therein for the general case of a hopping maneuver.
+A. HOPPING: A THREE-PHASED MANEUVER
+A spacecraft hopping maneuver is conceptually divided into three phases in which
+a robotic vehicle hops between two locations on the host spacecraft. Phase one of a hopping
+maneuver is a push motion, in which the hopping spacecraft uses its robotic manipulator
+to exert a motion against the host spacecraft, propelling the hopping spacecraft towards its
+final destination. At the time the gripper releases the handrail, the hopping spacecraft enters
+phase two, called the free-flying coast phase. The final phase of a hopping maneuver is the
+soft landing of the hopping spacecraft at the desired end location. Figure 10 illustrates
+conceptual division into three phases.
+Figure 10. Schematic of Maneuver. 
+16
+B. FORMULATION
+The governing equations for each phase are here derived. To do so, the following
+assumptions are made:
+• The robotic vehicle consists of multiple rigid body systems moving in
+three-dimensional space.
+• Relative orbital dynamic effects are negligible due to the close proximity
+of the hopping spacecraft to the host spacecraft.
+• All properties (state and inertia) of the hopping robotic vehicle are known.
+• Ideal contact dynamics exist between the hopping vehicle and the host
+spacecraft.
+1. Equations of Motion of a Free-Flying Robotic Multibody System
+The generalized coordinates of the base-spacecraft are position (𝒓𝒓0) and orientation
+(𝜽𝜽0) as written in Equation 1.
+𝒒𝒒𝟎𝟎 = �
+𝒓𝒓𝟎𝟎
+𝜽𝜽𝟎𝟎
+� (1)
+The generalized joint positions for a manipulator of the multibody system are
+written in Equation 2, where N denotes the number of joints.
+𝒒𝒒𝒎𝒎 =
+⎣
+⎢
+⎢
+⎢
+⎡
+𝒒𝒒𝟏𝟏
+𝒒𝒒𝟐𝟐
+⋮
+𝒒𝒒𝑵𝑵−𝟏𝟏
+𝒒𝒒𝑵𝑵 ⎦
+⎥
+⎥
+⎥
+⎤
+(2)
+Thus the position and orientation of the multibody system is given by 𝒒𝒒 as written
+in Equation 3.
+𝒒𝒒 = �
+𝒒𝒒𝟎𝟎
+𝒒𝒒𝒎𝒎� (3)
+The velocities and accelerations are written as Equations 4 and 5.
+𝒒𝒒̇ = �
+𝒒𝒒̇
+𝟎𝟎
+𝒒𝒒̇
+𝒎𝒎
+� (4) 
+17
+𝒒𝒒̈= �
+𝒒𝒒̈
+𝟎𝟎
+𝒒𝒒̈
+𝒎𝒎
+� (5)
+The hopping maneuver for a multibody system can be represented by the
+generalized equations of motion (Dubowsky et al. 1993) written as Equation 6:
+𝑯𝑯𝒒𝒒̈+ 𝑪𝑪𝒒𝒒̇ = 𝝉𝝉 (6)
+where 𝝉𝝉 is the generalized torques. The generalized inertia matrix 𝑯𝑯 is a function of 𝒒𝒒 for
+the multibody system. The generalized convective inertia matrix of the system is 𝑪𝑪 and is
+a function of 𝒒𝒒 and 𝒒𝒒̇ of the base and joints. Equation 6 can therefore be defined by
+subscript notation 0 for the base-spacecraft and subscript m for the manipulator as is written
+in Equation 7:
+�
+𝑯𝑯𝟎𝟎 𝑯𝑯𝟎𝟎𝟎𝟎
+𝑯𝑯𝟎𝟎𝟎𝟎
+𝑻𝑻 𝑯𝑯𝒎𝒎
+� �𝒒𝒒̈
+𝟎𝟎
+𝒒𝒒̈
+𝒎𝒎
+� + � 𝑪𝑪𝟎𝟎 𝑪𝑪𝟎𝟎𝟎𝟎
+𝑪𝑪𝒎𝒎𝒎𝒎 𝑪𝑪𝒎𝒎
+� �𝒒𝒒̇
+𝟎𝟎
+𝒒𝒒̇
+𝒎𝒎
+� = �
+𝝉𝝉𝟎𝟎
+𝝉𝝉𝒎𝒎� (7)
+Matrices 𝑯𝑯 and 𝑪𝑪 can be computed via SRL’s SPAcecraft Robotics Toolkit (SPART)
+software (Virgili-Llop et al. 2018). This software inputs a user defined robot with all its
+corresponding parameters and generates the robot model, Jacobians, inertia matrices 𝑯𝑯,
+and convective inertia matrices 𝑪𝑪.
+The momenta 𝓜𝓜 of the system including the linear (𝒫𝒫) and angular momenta (ℒ)
+are expressed by the following equations:
+𝓜𝓜 = �
+𝓛𝓛
+𝓟𝓟� = 𝑯𝑯𝟎𝟎𝒒𝒒̇
+𝟎𝟎 + 𝑯𝑯𝟎𝟎𝟎𝟎𝒒𝒒̇
+𝒎𝒎 (8)
+𝒅𝒅𝒅𝒅
+𝒅𝒅𝒅𝒅 = 𝝉𝝉𝟎𝟎 (9)
+The Jacobian, J maps generalized joint-space velocities 𝒒𝒒̇ to task-space velocities
+𝒕𝒕𝑃𝑃 and is required to adequately control the system (Siciliano et al. 2010).
+𝒕𝒕𝑷𝑷 = 𝑱𝑱𝑷𝑷𝒒𝒒̇ = �𝑱𝑱𝟎𝟎,𝑷𝑷, 𝑱𝑱𝑴𝑴,𝑷𝑷� �𝒒𝒒̇
+𝟎𝟎
+𝒒𝒒̇
+𝒎𝒎
+� (10)
+𝒕𝒕𝑷𝑷 = �
+𝒓𝒓̇
+𝑷𝑷
+𝝎𝝎𝑷𝑷
+� (11) 
+18
+The Jacobian describes the motion of the end-effector based on the rotation of the
+manipulator joints results with a change in attitude and position of the base (Wilde et at.
+2018).
+2. Equations of Motion During the Push
+A hopping maneuver begins with the robotic spacecraft attached to the handrail in
+what is called a perched mode. This is both a stationary position and the starting position
+of the hopping maneuver. From the perched position, the robotic spacecraft is rigidly
+attached to the handrail. The manipulator attached to the hopping spacecraft provide three
+degrees of freedom to orient the vehicle towards its desired final destination.
+The push is the initial motion of the hopping mobility approach. From the perched
+position, the robotic spacecraft’s gripper is attached to the handrail while the manipulator
+joints are actuated. The end-effector maintains rigid connection with the host spacecraft
+and the mapping between joint velocities and the end-effector velocities are expressed:
+𝒕𝒆 ൌ𝟎ൌ𝑱𝟎,𝑬𝒒ሶ
+𝟎 ൅ 𝑱𝒎,𝑬𝒒ሶ
+𝒎 (12)
+𝒕𝒆 ൌ𝟎ൌ𝑱𝟎,𝑬𝒖𝟎 ൅ 𝑱𝒎,𝑬𝒖𝒎 (13)
+the resulting velocities of the base-spacecraft during the push are obtained as follows:
+𝒒ሶ
+𝟎 ൌ െ𝑱𝟎,𝑬
+ି𝟏 𝑱𝒎,𝑬𝒒ሶ
+𝒎 (14)
+Upon the completion of the push, the gripper releases propelling the hopping
+spacecraft in the oriented direction and exploits a desired linear and angular velocity of the
+hopping vehicle to reach the final destination. The momenta of the system during the push
+is as follows:
+𝓜 ൌ ൫𝑯𝟎𝒎 െ 𝑯𝟎𝑱𝟎,𝑬
+ି𝟏 𝑱𝒎,𝑬൯𝒒ሶ
+𝒎 (15)
+3. Equations of Motion During the Free-Flying Coast
+The moment the gripper releases the handrail, the free-flying coast phase of the
+hopping maneuver begins. If no forces are applied to the multibody system then the 
+19
+momenta of the system is constant and the governing equations of the multibody system
+are as follows:
+𝝉𝝉𝟎𝟎 = 𝟎𝟎 (16)
+𝓜𝓜 → 𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄 (17)
+𝒓𝒓̇
+𝒄𝒄 = 𝓟𝓟
+𝒎𝒎𝒕𝒕𝒕𝒕𝒕𝒕
+→ 𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄 (18)
+The velocity of the base is, in general, not constant (as 𝑯𝑯0 is a function of 𝒒𝒒 and
+thus changes with orientation, 𝜽𝜽)
+𝒒𝒒̇
+𝟎𝟎 = 𝑯𝑯𝟎𝟎
+−𝟏𝟏(𝓜𝓜 − 𝑯𝑯𝟎𝟎𝟎𝟎𝒒𝒒̇
+𝒎𝒎) (19)
+If propulsion is used during the free-flying phase, the momenta would no longer be
+conserved. This part of the phase does have the option of using onboard propulsion to
+produce mid-course corrections as needed but the equations of motion during the freeflying coast were formulated without the use of the propulsion system. Errors may derive
+from imperfect release conditions during the push from the handrail. These errors can be
+corrected by modifying the translational trajectory to achieve the initial desired end
+location
+4. Equations of Motion During the Landing
+The soft-landing ends the maneuver when the gripper grasps the handrail with a
+zero relative velocity between the arm and the stationary handrail of the host spacecraft.
+𝒕𝒕𝒆𝒆 = 𝟎𝟎 = 𝑱𝑱𝟎𝟎,𝑬𝑬𝒒𝒒̇
+𝟎𝟎 + 𝑱𝑱𝒎𝒎,𝑬𝑬𝒒𝒒̇
+𝒎𝒎 (20)
+With 𝒒𝒒̇
+0 defined from Equation 18 and 𝑡𝑡𝑒𝑒 from Equation 19, 𝒒𝒒̇
+𝑚𝑚 is as follows:
+𝒒𝒒̇
+𝒎𝒎 = �𝑱𝑱𝟎𝟎,𝑬𝑬𝑯𝑯𝟎𝟎
+−𝟏𝟏𝑯𝑯𝟎𝟎𝟎𝟎 − 𝑱𝑱𝒎𝒎,𝑬𝑬�
+−𝟏𝟏�𝑱𝑱𝟎𝟎,𝑬𝑬𝑯𝑯𝟎𝟎
+−𝟏𝟏𝓜𝓜� (21)
+The movement of the arm to counter the rotation of the hopping spacecraft is
+desired to catch the handrail with a relative zero velocity between the stationary host
+handrail and the hopping spacecraft. 
+20
+The free-fly coast phase is further categorized into two categories, a passive phase
+and an active phase. The second phase of the free-flying coast maneuver is known as the
+active phase due to the active moving of the manipulator with respect to the hopping
+vehicle during the coast. Due to the moving of the manipulator 𝒒𝒒̇
+0 changes throughout this
+phase of the maneuver. The second phase of the free-flying coast maneuver is the beginning
+of the soft-landing maneuver.
+C. PLANNING A HOPPING MANEUVER
+Figure 11 notionally shows the geometric definition of a hopping maneuver. All
+vectors are projected onto the inertial Cartesian Coordinate System.
+Figure 11. Hopping Spacecraft Definitions.
+The problem formulation consists of both direct and inverse hopping problems. The
+direct formulation consists of solving for the trajectory once the generalized variables are
+known. The inverse formulation consists of solving for the trajectory given specified
+hopping inputs i.e., start and end locations.
+1. Direct Hopping Problem
+In the direct hopping problem, the generalized variables of the multibody system
+are known. Given that the position, 𝒓𝒓𝑒𝑒 and the orientation 𝜽𝜽𝑒𝑒 of the end-effector and the 𝒒𝒒
+of the system are known, then the kinematics can be solved for, providing the trajectory of
+the hopping maneuver. 
+21
+For the push, Equation 22 holds true.
+�
+𝒓𝒓𝒆𝒆
+𝜽𝜽𝒆𝒆
+� → 𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄𝒄 (22)
+During this phase, 𝒒𝒒̇
+𝑚𝑚 is a controlled input. Note that the manipulator is velocitycontrolled, thus the configuration at any time during the hopping maneuver is simply the
+integration of 𝒒𝒒̇
+𝑚𝑚. At the time of release, the manipulator configuration, 𝒒𝒒𝑚𝑚 and
+manipulator velocity 𝒒𝒒̇
+𝑚𝑚 are therefore known. Using Equation 14, the momenta of the
+system can be computed.
+For the free-flying coast, the center-of-mass is constant (Equation 17). The
+manipulator is assumed to be fixed during the initial free-flying coast and thus the basespacecraft velocity, 𝒒𝒒̇
+0 can be solved for with Equation 18. The trajectory is thus solved
+for by integrating 𝒒𝒒̇
+0 to get the 𝒒𝒒0 (position and orientation) of the base-spacecraft over the
+course of the free-flying coast phase of the hopping maneuver.
+During the soft-landing, the manipulator velocity (𝒒𝒒̇
+𝑚𝑚) is as written in Equation 23
+until the end-effector grasps the destination handrail, at which time, the base-spacecraft
+velocity (𝒒𝒒̇
+0) will obey Equation 24.
+𝒒𝒒̇
+𝒎𝒎 = �𝑱𝑱𝟎𝟎,𝑬𝑬𝑯𝑯𝟎𝟎
+−𝟏𝟏𝑯𝑯𝟎𝟎𝟎𝟎 − 𝑱𝑱𝒎𝒎,𝑬𝑬�
+−𝟏𝟏�𝑱𝑱𝟎𝟎,𝑬𝑬𝑯𝑯𝟎𝟎
+−𝟏𝟏𝓜𝓜� (23)
+𝒒𝒒̇
+𝟎𝟎 = −𝑱𝑱𝟎𝟎,𝑬𝑬
+−𝟏𝟏 𝑱𝑱𝒎𝒎,𝑬𝑬𝒒𝒒̇
+𝒎𝒎 (24)
+The goal of a soft-landing is to have the difference between the free-flying coast
+velocity (Equation 18) and the velocity of the base-spacecraft (Equation 24) following the
+moment the end-effector grips the destination handrail to be zero.
+Once the base-spacecraft is grasping the final handrail, 𝒒𝒒̇
+𝑚𝑚 goes to zero after which
+time, the hopping maneuver is complete.
+2. Inverse Hopping Problem
+In the inverse hopping problem, the initial position, 𝒒𝒒0 of the hopping spacecraft
+is known. The corresponding release configuration of the manipulator needs to be solved 
+22
+for. The inverse hopping maneuver takes a range of kinematic solutions found from the
+direct hopping problem and correlates the hopping spacecraft’s current height with the
+closest height data point to get the corresponding release configuration of the manipulator.
+D. CONCLUSION
+A planar hopping maneuver is feasible with small spacecraft equipped with a
+robotic manipulator. This simple hopping maneuver is constructed in such a way that the
+only control variable is the point of release determined by the orientation of the
+manipulator. The limited factor in the hopping maneuver therefore is the range of motion
+the manipulator is capable of (DOF).
+23
+III. SIMULATED HOPPING MANEUVERS WITH THE
+ASTROBEE FREE-FLYER
+To showcase and verify the proposed mobility approach, the Astrobee free-flyer is
+used for simulation of the hopping maneuver inside the simulated ISS. With the current
+hardware installed on the robot, Astrobee could perform a hopping maneuver by actuating
+joints in the manipulator to hop between two locations. The range of the manipulator and
+the velocities the joints, create a platform to conduct IVA hopping without additional
+hardware; merely a software upgrade could make Astrobee the first robotic spacecraft to
+hop in space. Results of the hopping maneuver simulate the inside of the ISS.
+The goal is for Astrobee to start from a perched configuration on an ISS handrail
+and push itself off the handrail, free-fly coast across the space station, and catch itself via
+a soft-landing. The simulated hopping maneuver provides proof of concept for ground test
+experiments as well as the ISS experiment. The data collected in the simulated environment
+will in future work be compared with ground tests to validate the correct forces and
+ultimately to provide validation to the experiment for safety purposes prior to the ISS
+experiment.
+A. ASTROBEE
+NASA – Ames’ free-flyer robot, Astrobee is an available platform to conduct
+control algorithms through the available guest scientist research program put forth by
+NASA. The hopping mobility approach of this thesis, commonly called astrobatics due to
+the gymnastic characterizes of the backflip involved in the maneuver is a software only
+payload that can be uploaded to the free-flyer while in the ISS. Prior to conducting
+experiments onboard the ISS, simulated and ground testing must first demonstrate the
+feasibility of the maneuver and demonstrate the hopping maneuver is safe for testing in the
+ISS.
+The simulated planar Astrobee experiment consists of a base spacecraft and six
+manipulator links. The six joint positions of Astrobee’s manipulator are written in Equation
+25, named in Table 2 and the associated links are displayed in Figures 12 and 13. 
+24
+ 𝒒𝒒𝒎𝒎 =
+⎣
+⎢
+⎢
+⎢
+⎢
+⎡
+𝒒𝒒𝟏𝟏
+𝒒𝒒𝟐𝟐
+𝒒𝒒𝟑𝟑
+𝒒𝒒𝟒𝟒
+𝒒𝒒𝟓𝟓
+𝒒𝒒𝟔𝟔⎦
+⎥
+⎥
+⎥
+⎥
+⎤
+ (25)
+Table 2. Name Association for the Six Joint Positions of Astrobee.
+Source: NASA (2018).
+Joint 𝒒𝒒𝑚𝑚
+Arm Proximal 𝑞𝑞1
+Arm Distal 𝑞𝑞2
+Gripper Left Proximal 𝑞𝑞3
+Gripper Left Distal 𝑞𝑞4
+Gripper Right Proximal 𝑞𝑞5
+Gripper Right Distal 𝑞𝑞6
+Figure 12. Named Links of Astrobee from Side View. 
+25
+Figure 13. Named Links of Astrobee from Bottom View.
+The joints 𝑞𝑞3 Rthrough 𝑞𝑞6 make up the gripper and are grouped together as such to
+be open or closed as needed for launch and landing.
+Figure 14. Gripper Links in the Closed Position with Astrobee in the
+Perch Configuration. 
+26
+Figure 15. Gripper Links in the Open Position. View from the Top of
+Astrobee.
+Astrobee’s manipulator pan range and tilt are as identified in Figure 16 and
+Figure 17, respectively.
+Figure 16. Pan range of -90° to 90° for Astrobee. Source: Park et al.
+(2017).
+27
+Figure 17. Tilt range of -30° to 90° for Astrobee. Source Park et al.
+(2017).
+The mass and principal moments of inertia properties of the system are given in
+Table 3.
+Table 3. Astrobee Manipulator: Mass and Inertia Parameters.
+Source: NASA (2018).
+Link Mass
+[kg]
+Principal Moments of Inertia [kg m2
+]
+Ixx Iyy Izz
+Base 7 0.1083 0.1083 0.1083
+Arm Proximal 0.1623 0.02705 0.02705 0.02705
+Arm Distal 0.1033 0.002705 0.002705 0.002705
+Gripper Left Proximal 0.04 0.002705 0.002705 0.002705
+Gripper Left Distal 0.0116 0.002705 0.002705 0.002705
+Gripper Right Proximal 0.04 0.002705 0.002705 0.002705
+Gripper Right Distal 0.02285 0.002705 0.002705 0.002705
+The linear velocity envelope of what Astrobee’s joints and links are capable of
+achieving are displayed in Figures Figure 18 and Figure 19. The results indicate that
+Astrobee can conduct a hopping maneuver in any direction. The results also indicate that
+Astrobee can push itself off the handrail and perch itself back on the same handrail. More
+importantly, the data shows that the max velocity of the hopping maneuver does not exceed 
+28
+the max velocity of the joints or the max velocity (~2.1 m/s) for free-flying robots in the
+ISS (Smith et al. 2016).
+Figure 18. Linear Velocity Envelope [m/s].
+Figure 19. Linear Velocity Envelope [m/s]. 
+29
+B. A PLANAR HOP WITH ASTROBEE
+A planar hopping maneuver reduces the dynamics of the problem to a 2D planar
+motion, with the initial position of Astrobee’s Arm Proximal Joint extended from the
+handrail at a determined height. The spacecraft completes the maneuver rotating about a
+single axis. The contact dynamics for the release are idealized and the grippers are opened
+and closed at the same rate so as to have no collisions with the gripper and the handrail.
+When the grippers are commanded open, the grippers release with no additional friction or
+delay. Further ground-based experiments must be conducted to verify if the real-world
+dynamics are equal to the idealized conditions for the simulation experiment with Astrobee.
+C. SIMULATION EXPERIMENT WITH ASTROBEE
+Due to software limitations, the application velocity to joints was infeasible. As
+such, to accomplish this planar hopping experiment, the only control variable is the
+configuration of the manipulator at the point of release. The range of possible ranges of the
+manipulator at release for a hard-landing hopping maneuver are found in Table 4. The
+height and range values in Table 4 can be correlated to the schematic of the hard-landing
+displayed in Figure 20. 
+30
+Table 4. Hard-Landing Correlation between Height and Range Via
+the Release Configuration of the Arm Proximal Joint.
+Height [m] Arm Proximal [rad] Range [m]
+0.282 -2.094 1.025
+0.368 -2.010 0.998
+0.452 -1.925 0.965
+0.532 -1.841 0.924
+0.609 -1.756 0.877
+0.682 -1.671 0.823
+0.749 -1.587 0.763
+0.812 -1.502 0.697
+0.868 -1.417 0.627
+0.919 -1.333 0.551
+0.962 -1.248 0.472
+0.999 -1.164 0.389
+1.029 -1.079 0.303
+1.051 -0.994 0.215
+1.065 -0.910 0.126
+1.072 -0.825 0.035
+31
+Figure 20. Schematic of Astrobee Completing a Hard-Landing.
+Table 5 provides the range the manipulator configurations for the Arm Proximal at
+time at of release for a soft-landing. The height and range values in Table 5 are correlated
+to Figure 21. A soft-landing includes actuation of the manipulator during the free-fly coast
+phase opposite the rotation of the base to negate the angular momentum of the system prior
+to landing. 
+32
+Table 5. Soft-Landing Correlation between Height and Range Via
+the Release Configuration of the Arm Proximal Joint.
+Height [m] Arm Proximal [rad] Range [m]
+0.3307 -2.094 0.7553
+0.4388 -2.022 0.7384
+0.4301 -1.950 0.7177
+0.4911 -1.950 0.7177
+0.5441 -1.878 0.6933
+0.5909 -1.806 0.6653
+0.6544 -1.733 0.6339
+0.7038 -1.733 0.6339
+0.7421 -1.667 0.5992
+33
+Figure 21. Schematic of Astrobee Completing a Soft-Landing.
+D. INITIALIZATION MODE
+When the hopping maneuver is initiated, the initial position of Astrobee is measured
+and compared with Table 4 to determine the corresponding Arm Proximal joint
+configuration associated with the height of Astrobee. The initial position of Astrobee
+perched on handrail is pictured in Figure 22. 
+34
+Figure 22. Astrobee Perched on ISS Handrail in Simulated ISS
+Environment.
+Table 4 and Table 5 provide the release configuration, 𝒒𝒒𝒎𝒎 at the exact moment of
+release and the associated height and range of the hopping maneuver.
+1. Inputs
+The inputs to the initialization mode controller are:
+(a) 𝒒𝒒𝑚𝑚 : The joint positions of the manipulator.
+(b) 𝒒𝒒̇
+𝑚𝑚 : The velocities of the manipulator joints.
+Prior to initialization mode, Astrobee is positioned in a random location and
+configuration. The onboard sensors of Astrobee determine the location of the robot and
+hopping maneuver software determines the inputs for the initialization mode calculated in
+Table 4 and Table 5 for the respective maneuver. The inputs are then fed into the
+initialization controller. The two inputs correspond to one revolution of Astrobee for a
+successful hopping maneuver. 
+35
+2. Outputs
+The outputs to the initialization mode controller are:
+(a) 𝝉𝝉𝑚𝑚: Torque applied to manipulator.
+(b) 𝝉𝝉0: Torque applied to base-spacecraft.
+(c) 𝑭𝑭0: Force on the base-spacecraft.
+(d) Completion flag: Indication that the maneuver has been completed.
+Output from the initialization controller command Astrobee to the push
+configuration with the grippers rigidly attached to the handrail. Completion flag signals
+that the controller has completed all tasks and is ready to enter the next mode.
+3. Completion Criteria
+The initialization mode controller measures the initial position and orientation of
+Astrobee, with a closed gripper, rigidly attached to the handrail, and then imparts a
+proportional feedback controller to command the joints of Astrobee to the required
+configuration to complete the hopping maneuver. The completion criteria are:
+(a) 𝒒𝒒𝒎𝒎_𝒓𝒓𝒓𝒓𝒓𝒓 − 𝒒𝒒𝒎𝒎 = 𝒒𝒒𝒎𝒎_𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕 where 𝒒𝒒𝒎𝒎_𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕 = 0.1 deg
+(b) 𝒒𝒒̇
+𝒎𝒎_𝒓𝒓𝒓𝒓𝒓𝒓 − 𝒒𝒒̇
+𝒎𝒎 = 𝒒𝒒̇
+𝒎𝒎_𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕 where 𝒒𝒒̇
+𝒎𝒎_𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕𝒕 = 0.05 deg/s
+When both criteria are met, the initiation mode is complete and enables the push
+mode.
+E. PUSH MODE
+The push initiates on the receipt of the completion flag from the initialization mode.
+1. Inputs
+The inputs to the push mode controller are:
+(a) 𝒒𝒒𝑚𝑚 : The joint positions of the manipulator.
+(b) 𝒒𝒒̇
+𝑚𝑚 : The velocities of the manipulator joints.
+36
+2. Outputs
+The outputs to the push mode controller are:
+(a) 𝝉𝝉𝑚𝑚: Torque applied to manipulator.
+(b) 𝝉𝝉0: Torque applied to base-spacecraft.
+(c) 𝑭𝑭0: Force on the base-spacecraft.
+(d) Completion flag: Indication that the maneuver has been completed.
+Output from the push controller indicates Astrobee ready to release from the
+handrail at the determined manipulator configuration. Completion flag signals that the
+controller has completed all tasks and is ready to enter the next mode.
+3. Completion Criteria
+The push actuates the joints of Astrobee and imparts a proportional feedback
+controller to command Astrobee to the proper release position 𝒒𝒒𝒎𝒎𝟏𝟏
+𝒓𝒓𝒓𝒓𝒍𝒍𝒍𝒍𝒍𝒍𝒍𝒍𝒍𝒍 where 𝒒𝒒𝟏𝟏 was
+calculated in the initiation mode based off of initial position of Astrobee. The completion
+criteria are:
+(a) �𝒒𝒒𝒎𝒎𝟏𝟏 − 𝒒𝒒𝒎𝒎𝟏𝟏
+𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓 � ∗ 𝒔𝒔𝒔𝒔𝒔𝒔𝒔𝒔(𝝉𝝉) > 𝟎𝟎
+(b) 𝒒𝒒𝒎𝒎𝟏𝟏
+𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓 = 𝒒𝒒𝟏𝟏
+When both criteria are met, the push mode is complete and the free-flying coast
+mode is enabled.
+F. FREE-FLYING PASSIVE COAST MODE
+1. Inputs
+The inputs to the free-flying passive coast mode controller are:
+(a) 𝒒𝒒𝑚𝑚 : The joint positions of the manipulator.
+(b) 𝒒𝒒̇
+𝑚𝑚 : The velocities of the manipulator joints.
+(c) 𝒓𝒓0 : Position of base-spacecraft
+37
+(d) 𝑫𝑫𝑫𝑫𝑫𝑫𝐵𝐵𝐵𝐵 : Direction Cosine Matrix – Body frame to inertia frame
+2. Outputs
+The outputs to the free-flying passive coast mode controller are:
+(a) 𝝉𝝉𝑚𝑚: Torque applied to manipulator.
+(b) 𝝉𝝉0: Torque applied to base-spacecraft.
+(c) 𝑭𝑭0: Force on the base-spacecraft.
+(d) Time: Log time.
+(e) Completion flag: Indication that the maneuver has been completed.
+Output from the free-fly coast controller indicates Astrobee has released from the
+handrail and is in free-flying passive coast mode with the manipulator fixed in the release
+configuration. Completion flag signals that the controller has completed all tasks and is
+ready to enter the next mode.
+3. Completion Criteria
+Astrobee’s manipulator is held fixed to the release position 𝒒𝒒𝒎𝒎𝟏𝟏
+𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓 . The
+completion criteria is:
+(a) 𝑑𝑑𝑑𝑑𝑑𝑑(𝒓𝒓𝐶𝐶𝐶𝐶𝐶𝐶𝒒𝒒0) − 𝒛𝒛𝑡𝑡ℎ𝑟𝑟𝑟𝑟𝑟𝑟 > 𝟎𝟎 where 𝒛𝒛𝑡𝑡ℎ𝑟𝑟𝑟𝑟𝑟𝑟 = 0.
+The 𝒛𝒛𝑡𝑡ℎ𝑟𝑟𝑟𝑟𝑟𝑟 is set to zero for the hard-landing maneuver as the gripper will not move prior
+to grasping the handrail.
+When the completion criteria is met, the free-flying coast passive mode is complete
+and the free-flying active coast mode is enabled.
+G. FREE-FLYING COAST ACTIVE MODE
+1. Inputs
+The inputs to the free-flying active coast mode controller are:
+(a) 𝒒𝒒𝑚𝑚 : The joint positions of the manipulator. 
+38
+(b) 𝒒𝒒̇
+𝑚𝑚 : The velocities of the manipulator joints.
+(c) 𝒓𝒓0 : Position of the base-spacecraft.
+(d) Time: Logged time.
+(e) 𝑫𝑫𝑫𝑫𝑫𝑫𝐵𝐵𝐵𝐵 : Direction Cosine Matric: Body frame to inertial frame.
+2. Outputs
+The outputs to the free-fly active coast mode controller are:
+(a) 𝝉𝝉𝑚𝑚: Torque applied to manipulator.
+(b) 𝝉𝝉0 = 0
+(c) 𝑭𝑭0 = 0
+(d) Time: Log time.
+(e) Completion flag: Indication that the maneuver has been completed.
+Outputs from the free-flying active coast controller indicate Astrobee is in freeflying active coast mode with the manipulator actively moving to negate the angular
+velocity. Completion flag signals that the controller has completed all tasks and is ready to
+enter the next mode.
+3. Completion Criteria
+Astrobee’s manipulator is no longer held fixed to the release position 𝒒𝒒𝒎𝒎𝟏𝟏
+𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓 but
+is moving to counter the rotation of Astrobee to enable a soft-landing. If a hard-landing has
+been programed, this mode will not be entered. The completion criteria is:
+(a) 𝑑𝑑𝑑𝑑𝑑𝑑(𝒓𝒓𝐶𝐶𝐶𝐶𝐶𝐶𝒒𝒒0) − 𝒛𝒛𝑡𝑡ℎ𝑟𝑟𝑟𝑟𝑟𝑟 > 𝟎𝟎 where 𝒛𝒛𝑡𝑡ℎ𝑟𝑟𝑟𝑟𝑟𝑟 = 0.
+The 𝒛𝒛𝑡𝑡ℎ𝑟𝑟𝑟𝑟𝑟𝑟 is set to zero for the soft-landing maneuver. The initial position of the base of
+Astrobee was increased to allow time for the manipulator to ramp up to the needed velocity.
+The manipulator must be opposite and equal to the rotation of the base to negate the angular
+rotation of the spacecraft. The moment the velocity of the manipulator equals the velocity
+of the rotation of the spacecraft, the gripper will grasp the handrail. 
+39
+When the completion criteria is met, the free-flying coast active mode is complete
+and the landing mode is enabled.
+H. SELF-STABILIZER MODE
+The stabilizer controller is the only controller that actively uses propellant. The
+purpose of this controller is to act as a safety-net in the event the spacecraft needs to cancel
+hopping maneuver.
+1. Inputs
+The inputs to the stabilization mode controller are:
+(a) 𝒒𝒒𝑚𝑚 : The joint positions of the manipulator.
+(b) 𝒒𝒒̇
+𝑚𝑚 : The velocities of the manipulator joints.
+(c) 𝒓𝒓0 : Position of the base-spacecraft.
+(d) 𝒓𝒓̇
+0 : Velocity of the base-spacecraft.
+(e) 𝒒𝒒𝐵𝐵𝐵𝐵 : Quaternion from base frame to inertial frame.
+(f) 𝝎𝝎𝐵𝐵𝐵𝐵 : Angular momenta from base frame to inertial frame.
+(g) 𝑫𝑫𝑫𝑫𝑫𝑫𝐵𝐵𝐵𝐵 : Direction Cosine Matrix: Base frame to inertial frame.
+2. Outputs
+The outputs to the stabilization mode controller are:
+(a) 𝝉𝝉𝑚𝑚: Torque applied to manipulator.
+(b) 𝝉𝝉0: Torque applied to base-spacecraft.
+(c) 𝑭𝑭0: Force on the base-spacecraft.
+(d) Completion flag: Indication that the maneuver has been completed.
+Outputs from the stabilization controller indicates Astrobee has released from the
+handrail and is stable in a centralized location safe from colliding with the walls of the ISS. 
+40
+Completion flag signals that the controller has completed all tasks and Astrobee remains
+in a hover position.
+3. Completion Criteria
+Astrobee’s manipulator is held fixed to the release position 𝒒𝒒𝒎𝒎𝟏𝟏
+𝒓𝒓𝒓𝒓𝒓𝒓𝒓𝒓 𝒂𝒂𝒔𝒔𝒔𝒔. The
+completion criteria are:
+(a) time > 5 𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠𝑠
+(b) Astrobee positioned at the (0,0,0)
+When the completion criteria are met, the stabilization mode is complete and the
+maneuver is disabled.
+I. LANDING MODE
+The passive actuation of the proximal joint is defined in the final landing phase as
+a hard-landing if the robotic manipulator remains stationary during the coast phase. The
+manipulator remains stationary in order to keep the release configuration equal to the catch
+configuration. The spacecraft will complete a 270 degree rotation from handrail to handrail.
+The proximal joint deflection is the only control variable and the starting height with the
+joint deflection determine the landing location.
+To achieve a softer-landing, approximately the last five seconds of the hopping
+maneuver, immediately prior to perching, the hopping spacecraft will actuate the proximal
+joint to eliminate the relative angular velocity. The absence of angular velocity by
+definition will achieve a relative velocity of zero between the hopping vehicle and the
+stationary handrail, which creates the desired effect of a “soft-landing.” An ideal relative
+velocity of zero is not possible with Astrobee due to the DOF of the manipulator. The
+angular velocity can be eliminated but not the linear velocity. Prior to the hopping
+maneuver, the required joint deflection for the ramp up of the soft-landing is a fixed
+parameter. The actuation of the proximal joint changes the spacecraft’s rotation.
+1. Inputs
+The inputs to the Landing mode controller are: 
+41
+(a) 𝒒𝒒𝑚𝑚 : The joint positions of the manipulator.
+(b) 𝒒𝒒̇
+𝑚𝑚 : The accelerations of the manipulator joints.
+2. Outputs
+The outputs to the stabilization mode controller are:
+(a) 𝝉𝝉𝑚𝑚: Torque applied to manipulator.
+(b) 𝝉𝝉0: Torque applied to base-spacecraft.
+(c) 𝑭𝑭0: Force on the base-spacecraft.
+(d) Completion flag: Indication that the maneuver has been completed.
+Outputs from the landing controller indicate Astrobee has caught the handrail.
+Completion flag signals that the controller has completed all tasks and the hopping
+maneuver is complete.
+3. Completion Criteria
+Astrobee’s manipulator is in the catch position and Astrobee is rigidly grasping the
+ISS handrail. The completion criteria are:
+(a) 𝒒𝒒̇
+𝑚𝑚 = 0 : The accelerations of the manipulator joints.
+When the completion criteria are met, the hopping maneuver is complete.
+J. CONCLUSION
+Planar hopping maneuver is possible with NASA - Ames Research Center’s Freeflyer, Astrobee. The release configuration of the manipulator is the only control variable
+for a planar hopping maneuver with Astrobee. As such, height and range are associated
+with the release configuration. Due to the DOF of Astrobee’s manipulator, achieving a
+soft-landing is only applicable in negating the angular velocity. Future work includes,
+targeting a specific range by moving the manipulator during free-flying coast phase and
+creating a more versatile manipulator with additional DOF to negate the linear velocity of
+Astrobee to truly achieve a relative velocity of zero in the soft-landing. 
+42
+THIS PAGE INTENTIONALLY LEFT BLANK 
+43
+IV. SIMULATION RESULTS
+Results from numerical simulation experiments are presented in this chapter. Two
+simulation experiments were conducted to verify the hopping maneuver concept. The first
+of the simulation experiments is the demonstration of the hard-landing with the passive
+proximal joint deflection. The second simulation experiment is the implementation of the
+soft-landing proximal-joint actuation. All experiment results verify the hopping maneuver
+concept and provide data to be compared with ground based tests. Purpose of simulation
+and ground based testing is to validate the hopping maneuver concept and the likelihood
+of a successful hopping maneuvers in zero-gravity environment.
+A. HARD-LANDING HOPPING SIMULATION
+Simulation begins with Astrobee perched on the handrail. Moments before the time
+of release, the proximal joint is actuated to create the push mode. The simulation imposes
+a constant velocity on the joint until the proximal joint matches the defined release
+configuration. The deflection then stops, the joint velocity is now zero, and Astrobee enters
+into free-fly coast mode. During this phase, the proximal joint is held fixed. The landing
+mode is the mode in which Astrobee catches the handrail at the final location inside the
+simulated ISS environment. Figure 23 illustrates the hopping maneuver and defines the
+terms range and height with respect to the experiment set up. Figure 24 displays the results
+of the simulated hopping maneuvers, displaying the height and range of 14 hopping
+maneuvers all of which are within the range of values described in Table 4. Astrobee begins
+at a given height located on the right hand side of the graph and ends the maneuver at a
+determined range (Table 4) on the left hand side of the graph. The figure has the height
+defined on the right-hand axis label to visually mirror the experiment seen in the schematic
+of Figure 23. 
+44
+Figure 23. Schematic of Astrobee Completing a Hard-Landing.
+Figure 24. Location of Base during Hard-Landing Hopping Maneuver. 
+45
+The proximal joint deflection over the span of the hopping maneuvers are displayed
+in Figure 25. The proximal joint is actuated for the push phase and then held fixed for the
+duration of the hopping maneuver indicated by the straight line in Figure 25. During the
+catch phase, the proximal joint is again actuated to grasp the handrail and complete the
+hopping maneuver.
+Figure 25. Hard-Landing Proximal Joint Position
+The forces experienced during the maneuver are of interest and are displayed in
+Figure 26. The results indicate that approximately 2 Newton of force are experienced
+during the push. Ground based experiments will test the dynamics with real-world
+environments. The ground based experiments will need to be less than 2 Newton for these
+simulated experiments to verify the hopping maneuver concept. 
+46
+Figure 26. Forces During Push Phase of Hard-Landing Hopping
+Maneuver.
+B. SOFT-LANDING HOPPING SIMULATION
+Simulation begins with Astrobee perched on the handrail. Moments before the time
+of release, the proximal joint is actuated to make up the push mode. Once the proximal
+joint reaches the release configuration, the deflection stops as Astrobee enters into free-fly
+coast mode. During the majority of this phase, the proximal joint is held fixed until the
+simulation enters active joint landing in which the joint is no longer held fixed and moves
+to counter the angular velocity. The landing mode is the mode in which Astrobee catches
+the handrail at the final location inside the simulated ISS environment. Figure 27 illustrates
+the soft-landing hopping maneuver and defines the terms range and height with respect to
+the experiment set up. Figure 28 displays the results of the simulated hopping maneuvers,
+displaying the height and range of 10 hopping maneuvers all of which are within the range 
+47
+of values described in Table 5 . Astrobee begins at a given height located on the right hand
+side of the graph and ends the maneuver at a determined range (Table 5 ) on the left hand
+side of the graph. The figure has the height defined on the right-hand axis label to visually
+mirror the experiment seen in the schematic of Figure 27.
+Changes to the hard-landing are as follows. The software is not changed but rather
+the hard-landing command never enters active joint phase of the free-flying coast whereas
+soft-land not only completes the free-flying coast passive joint but then enters the active
+joint phase.
+Figure 27. Schematic of Astrobee Completing a Soft-Landing. 
+48
+Figure 28. Location of Base during Soft-Landing Hopping Maneuver.
+The proximal joint deflection over the span of a hopping maneuver are displayed
+in Figure 29. The proximal joint is actuated for the push and actuated again prior to the
+catch indicated by the rounded curve near the end of the maneuver. During the catch phase,
+the grippers grasp the handrail and complete the hopping maneuver. 
+49
+Figure 29. Soft-Landing Proximal Joint Position
+The forces experienced during the maneuver are of interest and are displayed in
+Figure 30. The results indicate that approximately 2 Newton of force are experienced
+during the push. Ground based experiments will test the dynamics with real-world
+environments. The ground based experiments will need to be less than 2 Newton for these
+simulated experiments to verify the hopping maneuver concept. 
+50
+Figure 30. Forces during the Push Phase of Soft-Landing Hopping
+Maneuver.
+C. CONCLUSION
+Planar hopping maneuver is possible with NASA – Ames Research Center’s Freeflyer, Astrobee. The release configuration of the manipulator is the only control variable
+for a planar hopping maneuver with Astrobee. As such, the height and range are associated
+with the release configuration. Due to the DOF of Astrobee’s manipulator, achieving a
+soft-landing is only applicable in negating the angular velocity. Future work includes,
+targeting a specific range by moving the manipulator during free-flying coast phase and
+creating a more versatile manipulator with additional DOF to negate the linear velocity of
+Astrobee to truly achieve a relative velocity of zero in the soft-landing. 
+51
+V. PLANNED ISS EXPERIMENT
+The ISS provides a safe environment to conduct zero-gravity experiments for
+hopping maneuvers. Research facilities onboard the ISS support a risk free platform to
+conduct microgravity experiments. The dynamic environment of the ISS are ideal for
+testing guidance and control algorithms for maneuverability of spacecraft in space.
+Astrobee provides the robotic vehicle necessary to demonstrate advanced control algorithm
+and will be the platform of choice for this thesis. Through guest scientist research, this
+thesis experiment is capable of implementation onboard the ISS. Bi-weekly meetings with
+the NASA - Ames Research team and quarterly updates to the SPHERES/Astrobee
+working group provided the ground work necessary to make this thesis experiment possible
+with fastest integration to NASA’s flight software. Accessibility to the ISS research facility
+where Astrobee will conduct the experiments is limited to software updates only to the
+robotic vehicle via NASA - Ames Research Center control center.
+As a Department of Defense entity, Space Experiments Review Board (SERB)
+approval is required to get approval to run an experiment onboard the ISS and to be added
+to a mission manifest. The objective for conducting a hopping maneuver onboard the ISS
+is to conduct on-orbit demonstration of the hopping mobility approach. The approved
+mission manifest and the concept of operations for the experiment setup is discussed in
+detail in this chapter. The impact of this on-orbit demonstration is to advance orbital
+robotics technology with application to include on-orbit servicing and assembly of large
+apertures in space.
+A. CONCEPT OF OPERATION
+Mission manifest includes five on-orbit experiment sessions. The scheduled
+sessions are designed in such a way to increase in complexity allowing time to implement
+lessons learned between experiment sessions. Table 6 identifies the goals for each session.
+Sessions are scheduled for three-hour time slots. The first three experiments require
+reserved astronaut time to provide a safety net for the robot in the case of unexpected
+telemetry. One of the three Astrobee that is not involved in the maneuver will also act as a 
+52
+third party observer along side the astronauts but unlike the astronauts the robot will not be
+able to reposition the maneuvering Astrobee or reset the robot as needed for the duration
+of the experiment.
+Table 6. Five Approved Experiment Sessions Onboard ISS.
+S1 Explore push maneuvers. Termination during coast.
+S2 Push aiming at target handrail. Termination during coast.
+S3 Hopping with propulsive stabilization prior to handrail-perching.
+S4 Complete hop maneuver. Push, free-fly, and soft-land.
+S5 Margin.
+B. QUALITY OF THE EXPERIMENT
+On-orbit demonstration of the hopping maneuver will be the first on-orbit
+demonstration of a propellantless hopping maneuver. Successful laboratory testing and
+numerical simulations suggest high likelihood of success. Advances orbital robotic
+mobility, complementing to other Department of Defense (DoD) research programs.
+C. PLAN OF IMPLEMENTATION
+This experiment is low-risk and low-cost due to the integration with Astrobee
+strictly software and with no hardware components to modify the spacecraft. The make up
+of the experiment leverages ISS assets and NASA - Ames Research Center’s Astrobee
+mission control center. Overall the research done is educational in nature and adds value
+to NPS students through Masters thesis exposure to flight experimentation. Guest Scientist
+Research is a pivotal make up for the ISS and as such is the ideal platform to conduct
+propellantless hopping maneuvers. Requested services onboard the ISS are Astronaut
+Support for limited Astrobee handling (Astrobee is expected to be autonomous), video
+footage of the experiment, and data uplink/downlink capabilities. 
+53
+D. FLIGHT REQUIREMENTS
+No additional flight hardware. Experiments use Astrobee free-flyer onboard ISS.
+ASTROBATICS only requires to uplink a software executable to the Astrobee free-flyer.
+On-orbit experimentation required to demonstrate and validate hopping maneuver in the
+relevant dynamic environment. Hardware-related dynamic effects, such as contacts
+dynamics, are difficult to accurately recreate on a simulation environment. Experiments on
+a numerical simulation and on a reduced dynamic environment on the lab. have already
+been conducted.
+E. TRANSITION PLAN
+Use of NASA - Ames Research Center’s Astrobee control center to command and
+downlink experiment data. PI receives experiment data and is responsible for analysis and
+dissemination. Scientific results published as peer-reviewed publications in top-ranked
+journals and scientific conferences. Astronautical Engineering Masters students’
+involvement during the development, operations, and analysis.
+F. MILITARY RELEVANCE
+Improved robotics capabilities for on-orbit servicing or assembly. Unique interspacecraft transport capability. More capable/reliable/resilient space assets for national
+security as a result. Objects in space are increasing yearly. With each new satellite brings
+additional space debris that clutters the orbital planes. Military assets could use the
+servicing robot as an extra set of eyes on orbit. The options are endless. A camera could
+give real-time telemetry to display all hazards near the satellite. The camera could range
+from a real-time picture to an inferred sensor. The robot would have the agility to reposition
+itself in any orientation around the satellite to provide better viewing of potential obstacles.
+The servicing satellite could exam the physical condition of the target satellite to give
+visual feedback of the current condition of the satellite. This would provide vital
+information to ground crews to assess any repairs. Servicing vehicles would have installed
+dexterous arms that could complete rudimentary repairs as needed to further the life of the
+mission. 
+54
+THIS PAGE INTENTIONALLY LEFT BLANK
+55
+VI. CONCLUSIONS
+The hopping mobility approach for a muiltibody spacecraft was investigated. A
+hopping maneuver to be conducted on-board the International Space Station was designed
+for the platform, Astrobee. Software simulations were designed an executed to explore the
+hopping. The research question of this thesis, “Is there an ideal mobility for use in space
+that uses zero propellant?” The results of this thesis indicate that hopping mobility for use
+in space is not only a feasible option but that it can provide a zero propellant option for
+mobility in space. The next section addresses further research needs to accomplish a
+successful hopping maneuver in space.
+A. FUTURE WORK
+Future work includes further ground based experiments. The purpose of ground
+based experiments is to verify the concept of a hopping maneuver. Two facilities are
+available for ground based testing, one at NPS and another at NASA - Ames Research
+Center. The two centers provide a granite monolith table for near frictionless
+surface representative of the zero gravity environment of space. The SRL’s testbed
+facility (Figure 31) is composed of three systems, 1) VICON motion capture system, 2) a
+4x4 meter granite monolith table with attached 3D printed ISS handrails, 3) multibody FSS.
+Figure 31. POSEIDYN Testbed. Source: Virgili-Llop (2016). 
+56
+The 3D printed model of Astrobee’s manipulator arm was created by fellow thesis
+student, Justin Komma to provide a real-world test platform to test hopping maneuver on
+NPS test-bed and compare with simulation results. The replica of Astrobee’s robotic
+manipulator was mounted in such a way that the hopping mobility approach could be tested
+with hardware in the loop.
+Due to the delays in the launch of Astrobee flight units to the ISS, the hopping
+mobility experiment in the ISS was not able to be conducted prior to the completion of this
+thesis. All paperwork and ground work has been completed in anticipation for the ISS
+experiment. Follow on work includes a more detailed concept of operations for the ISS
+experiment. Following the ISS experiment, further analysis will need to be conducted on
+the accuracy and propellant savings the hopping mobility maneuver saves if any.
+B. RESEARCH SIGNIFICANCE
+The mobility approach of this thesis has implementation for providing resilience
+and more capable space assets. Astobatics demonstrates the flexibility of on-orbit
+repurposing and augmentation of spacecraft. The ability to free-fly propellantlessly could
+enable the servicing of spacecraft in the form of refueling. Astrobatics would enable a space
+spacecraft to further the capabilities of national assets in the form of on-orbit assembly.
+Large apertures or large structures would no longer need to be assembly by an astronaut
+but rather a small dexterous multifaceted vehicle would suffice to safely assemble all
+structures in space. Lastly, astrobatics would provide the resilience of spacecraft already
+on-orbit in the form of repairs and anomaly resolution. Small vehicles could maneuver into
+position to inspect the exterior of damaged satellites to provide real-time anomaly
+resolution.
+Image a satellite that had complications in launch and is unable to make it to its
+desired orbit. What if the satellite could be assisted to its desired orbit? This could happen
+one of two ways. The first idea is for the satellite to use the onboard propellant to send it
+off into its target orbit. The satellite reaches the orbit but then has no fuel onboard to
+complete any mission. Now, insert a servicing satellite with the maneuvering capabilities
+developed at NPS. The servicing spacecraft could capture the tumbling spacecraft and with 
+57
+its dexterous arms could then refuel the orbiting satellite enabling and further mission life.
+The second option is the servicing satellite captures the satellite at sub-orbit and the
+servicing satellite uses onboard propellant to boost both vehicles to desired orbit.
+The amount of money spent on building and launching military satellites must be
+protected and preserved. A servicing satellite could provide additional fuel, preform onorbit repairs, maneuver or manipulate the orbiting satellite into new configurations. 
+58
+THIS PAGE INTENTIONALLY LEFT BLANK
+59
+LIST OF REFERENCES
+Ambrose, Robert O., Hal Aldridge, R. Scott Askew, Robert R. Burridge, William
+Bluethmann, Myron Diftler, Chris Lovchik, Darby Magruder, and Fredrik
+Rehnmark. 2000. “Robonaut: NASA’s space humanoid,” in Intelligent Systems
+and their Applications, IEEE 15, no. 4 (July 2000): 57–63.
+https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=867913.
+Bradstreet, Andrew. 2017. “Design, Integration, and Testing of an Autonomous Multibody Spacecraft Simulator for Low Gravity Hopping and Grasping.” Master’s
+thesis, Naval Postgraduate School. https://calhoun.nps.edu/.
+Burdick, Joel, and Paolo Fiorini. “Minimalist Jumping Robots for Celestial Exploration,”
+in The International Journal of Robotics Research 22, no. 7–8 (July 2003): 653–
+674. doi: 10.1177/02783649030227013.
+Chen, Yongquan, Chengjiang Wang, Wenfu Xu, Huihuan Qian and Yangsheng Xu.
+2013. “Survey of Mobility Approaches for EVR Application in Space Station,” in
+IEEE International Conference on Information and Automation (ICIA) (August
+2013): 493–498. doi: 10.1109/ICInfA.2013.6720349.
+Coleshill, Elliott, Layi Oshinowo, Richard Rembala, Bardia Bina, Daniel Rey, and
+Shelley Sindelar. 2009. “Dextre: Improving Maintenance Operations on the
+International Space Station,” in Acta Astronautica 64, no. 9 (2009): 869–874. doi:
+10.1016/j.actaastro.2008.11.011.
+Dubowsky, Steven, and Evangelos Papadopoulos, 1993. “The Kinematics, Dynamics,
+and Control of Free-Flying and Free-Floating Space Robotic Systems,” In IEEE
+Transactions on Robotics and Automation, vol. 9, no. 5 (October 1993): 531–543.
+doi: 10.1109/70.258046.
+Hockman, Benjamin J. and Mario Pavone. 2017. “Stochastic Motion Planning for
+Hopping Rovers on Small Solar System Bodies,” in Intentional Symposium on
+Robotics Research (ISRR), Puerto Varas, Chili, 2017. Puerto Varas, Chili, 2017.
+Japan Aerospace Exploration Agency. 2017. “JEM Internal Ball Camera (Int-Ball).”
+http://issstream.tksc.jaxa.jp/iss2/press/170726_intball_en.pdf.
+Keller, John. 2016. “DARPA RSGS Program Eyes Space Robot to Maintain
+Geosynchronous Satellites. (Defense Advanced Research Projects Agency)
+(Robotic Servicing of Geosynchronous Satellites),” in Military & Aerospace
+Electronics 27, no. 6 (June 1, 2016): 4. 
+60
+Knight, Russell, Caroline Chouinard, Grailing Jones, and Daniel Tran. 2014.”Leveraging
+Multiple Artificial Intelligence Techniques to Improve the Responsiveness in
+Operations Planning: ASPEN for Orbital Express.” AI Magazine 35 (4): 26–36.
+http://dx.doi.org.libproxy.nps.edu/10.1609/aimag.v35i4.2555.
+Komma, Justin. 2018. “Mechatronics: the development, analysis, and ground based
+demonstrations of robotic spacecraft hopping with a manipulator.” Unpublished
+Thesis, December 14, 2018.
+McCamish, Shawn B., Marcello Romano, Simon Nolet, Christine M. Edwards, and
+David W. Miller. 2009. “Flight Testing of Multiple-Spacecraft Control on
+SPHERES During Close-Proximity Operations.” In Journal of Spacecraft and
+Rockets, vol 46, no.6 (December 2009): 1202–1213.
+Morris, Jefferson. 2007. “Full Service: Pioneering Orbital Express Mission Offers Many
+Lessons for Future Satellite Servicing.” Aviation Week & Space Technology 167,
+no. 4 (July 23, 2007): 57. http://search.proquest.com/docview/206168870/.
+National Aeronautics and Space Administration. 2018. “Astrobee.” Last modified
+October 10, 2018. https://www.nasa.gov/astrobee.
+National Aeronautics and Space Administration. 2018. “International Space Station
+Basics.” https://www.nasa.gov/pdf/179225main_ISS_Poster_Back.pdf.
+National Aeronautics and Space Administration. 2018. “R2.” Last modified October 22,
+2018. https://robonaut.jsc.nasa.gov/R2/.
+National Aeronautics and Space Administration. 2018. “Robonaut 2.”
+https://www.nasa.gov/sites/default/files/fs201402002_jsc_robonaut2_fs_updates4
+.pdf.
+National Aeronautics and Space Administration. 2018. “Pilot Study with the Crew
+Interactive Mobile Companion (Cimon) (Mobile Companion). Last modified July
+19, 2018. https://www.nasa.gov/mission_pages/station/research/experiments/
+2684.html.
+National Aeronautics and Space Administration. 2017. “Synchronized Position Hold,
+Engage, Reorient, Experimental Satellites (SPHERES).” Last modified July 26,
+2017. https://www.nasa.gov/mission_pages/station/research/experiments/
+311.html.
+Park, In-Won, Trey Smith, Hugo Sanchez, Sze Wun Wong, Pedro Piacenza, and Matei
+Ciocarlie. 2017. “Developing a 3-DOF Compliant Perching Arm for a Free-Flying
+Robot on the International Space Station,” in IEEE International Conference on
+Advanced Intelligent Mechatronics (July 2017): 1135–1141. 
+61
+Patten, Laryssa, Lindsay Evans, Layi Oshinowo, Marius Ochisor, Nara Kazuharu, Aris
+Lodewijk, and Ed Tabarah. 2002. “International Space Station Robotics: A
+Comparative Study of ERA, JEMRMS and MSS,” in 7th ESA Workshop on
+Advanced Space Technologies for Robotics and Automation ‘ASTRA 2002’
+(Noordwijk: ESA), 1–8. http://robotics.estec.esa.int/ASTRA/Astra2002/Papers/
+astra2002_1.3-1.pdf.
+Rehnmark, Fredrik, Ivan Spain, William Bluethmann, S. Michael Goza, Robert O.
+Ambrose, and Ken Alder. 2004. “An Experimental Investigation of Robotic
+Spacewalking.” 4th IEEE/RAS International Conference on Humanoid Robots,
+2004, 1:366–384. USA: IEEE, 2004. doi: 10.1109/ICHR.2004.1442132.
+Sallaberger, Christian. 1997. “Canadian Space Robotic Activities.” Acta Astronautica
+vol. 41, no. 4 (1997): 239–246. doi: 10.1016/S0094-5765(98)00082-4.
+Shoemaker, James, and Melissa Wright. (2003). “Orbital Express Space Operations
+Architecture Program,” in Proceedings of SPIE 5088, Space Systems Technology
+and Operations (Orlando, FL), 56–65. doi: https://doi.org/10.1117/12.499871.
+Siciliano, B., Sciavicco, L., Villani, L., and Oriolo, G. (2010). Robotics. London
+:Springer-Verlag.
+Smith, T., Barlow, J, Bualat, M., Fong, T., Provencher, C., Sanchez, H., and Smith, E.
+2016. “Astrobee: A New Platform for Free-Flying Robotics on the International
+Space Station.” International Symposium on Artificial Intelligence, Robotics, and
+Automation in Space (i-SAIRAS), 2016. http://hdl.handle.net/2060/20160007769.
+Ticker, Ronald, Frank Cepollina, and Benjamin Reed. 2015. “NASA’s In-Space Robotic
+Servicing.” AIAA Space 2015 Conference and Exposition. 31 Aug. – 2 Sep. 2015,
+Pasadena, California. AIAA, 2015.
+Ulamec, S., Kucherenko, V., Biele, J., Bogatchev, A., Makurin, A., and Matrossov, S.
+2011. “Hopper Concepts for Small Body Landers.” Advances in Space Research
+47, no. 3 (2011): 428–439.
+Virgili-Llop, Josep, Jerry V. Drew II, and Marcello Romano. 2016. “Design and
+Parameter Identification by Laboratory Experiments of a Prototype Modular
+Robotic Arm for Orbiting Spacecraft Applications,” in 6th International
+Conference on Astrodynamics Tools and Techniques (ICATT), 14–17 March
+2016, Darmstadt, Germany, 2016.
+Virgili-Llop, Josep, Katrina P. Alsup. 2018. SPART: SPAcecraft Robotics Toolkit.
+https://github.com/NPS-SRL/SPART. Available: https://github.com/NPS-SRL/
+SPART.
+62
+Wilde, Markus, Stephen Kwok Choon, Alessio Grompone, and Marcello Romano. 2018.
+“Equations of Motion of Free-Floating Spacecraft-Manipulator Systems: An
+Engineer’s Tutorial.” Frontiers in Robotics and AI 5:41. doi: 10.3389/
+frobt.2018.00041
+Yoshida, Kazuya. 2003. “Engineering Test Satellite VII Flight Experiments for Space
+Robot Dynamics and Control: Theories on Laboratory Test Beds Ten Years Ago,
+Now in Orbit.” International Journal of Robotics Research 22, no. 5 (May 1,
+2003): 321–335. http://search.proquest.com/docview/230036725/.
+63
+INITIAL DISTRIBUTION LIST
+1. Defense Technical Information Center
+Ft. Belvoir, Virginia
+2. Dudley Knox Library
+Naval Postgraduate School
+Monterey, California
